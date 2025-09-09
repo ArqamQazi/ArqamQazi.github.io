@@ -3,6 +3,20 @@ layout: post
 title: "My First Blog Post"
 date: 2025-09-09
 ---
+# My first blog post
 
 This is my **first blog post**.  
-I wrote it in Markdown (from Obsidian).  
+
+This website is built using jekyll, and it was quite easy to setup.
+
+Let's see if it can render code and maths:
+
+**Code:**
+```python
+print("Hello world")
+```
+
+**Maths:**
+$$
+L\left\{f(t)\right\}=F(s)=\int_{0}^{\infty} e^{-st}f(t)dt
+$$
