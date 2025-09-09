@@ -1,4 +1,62 @@
-theme: minima
-title: My Portfolio and Blog
-description: >
-  Welcome to my site!
+# Site settings
+title: "Arqam’s Portfolio & Blog"
+email: your_email@example.com
+description: >-
+  My personal website — portfolio + blog, built with Jekyll and Minimal Mistakes.
+baseurl: "" # leave empty for GitHub Pages user site
+url: "https://username.github.io" # replace with your GitHub Pages URL
+
+# Author settings
+author:
+  name: "Arqam"
+  bio: "Computer Engineering student, developer."
+  location: "India"
+  links:
+    - label: "GitHub"
+      icon: "fab fa-github"
+      url: "https://github.com/ArqamQazi"
+
+# Theme setup
+remote_theme: "mmistakes/minimal-mistakes"
+plugins:
+  - jekyll-include-cache
+
+# Build settings
+markdown: kramdown
+paginate: 5
+paginate_path: "/blog/page:num/"
+timezone: Asia/Kolkata
+
+# Collections
+collections:
+  portfolio:
+    output: true
+    permalink: /:collection/:path/
+
+# Defaults
+defaults:
+  - scope:
+      path: ""
+      type: posts
+    values:
+      layout: single
+      author_profile: true
+      read_time: true
+      comments: false
+      share: true
+      related: true
+  - scope:
+      path: ""
+      type: pages
+    values:
+      layout: single
+      author_profile: true
+
+# Navigation (top menu)
+navigation:
+  - title: "Home"
+    url: /
+  - title: "Blog"
+    url: /blog/
+  - title: "Portfolio"
+    url: /portfolio/
