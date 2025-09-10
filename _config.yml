@@ -21,6 +21,11 @@ remote_theme: "mmistakes/minimal-mistakes"
 plugins:
   - jekyll-include-cache
 katex: true 
+highlighter: rouge
+
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
 # Build settings
 markdown: kramdown
 paginate: 5
