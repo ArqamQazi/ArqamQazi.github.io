@@ -3,8 +3,8 @@ title: "Arqam’s Portfolio & Blog"
 email: your_email@example.com
 description: >-
   My personal website — portfolio + blog, built with Jekyll and Minimal Mistakes.
-baseurl: "" # leave empty for GitHub Pages user site
-url: "https://username.github.io" # replace with your GitHub Pages URL
+baseurl: "" 
+url: "https://arqamqazi.github.io" 
 
 # Author settings
 author:
@@ -26,6 +26,7 @@ highlighter: rouge
 kramdown:
   input: GFM
   syntax_highlighter: rouge
+  
 # Build settings
 markdown: kramdown
 paginate: 5
