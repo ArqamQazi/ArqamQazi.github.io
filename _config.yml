@@ -20,7 +20,7 @@ author:
 remote_theme: "mmistakes/minimal-mistakes"
 plugins:
   - jekyll-include-cache
-katex: true 
+mathjax: true 
 highlighter: rouge
 
 kramdown:
