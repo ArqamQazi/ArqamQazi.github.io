@@ -18,5 +18,5 @@ print("Hello world")
 
 **Maths:**
 $$
-L\left\{f(t)\right\}=F(s)=\int_{0}^{\infty} e^{-st}f(t)dt
+L\{ f(t) \} = F(s) = \int_{0}^{\infty} e^{-st} f(t)\, dt
 $$
