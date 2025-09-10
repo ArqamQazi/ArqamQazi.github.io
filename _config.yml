@@ -16,10 +16,7 @@ author:
       icon: "fab fa-github"
       url: "https://github.com/ArqamQazi"
 
-# Theme setup
-remote_theme: "mmistakes/minimal-mistakes"
-plugins:
-  - jekyll-include-cache
+
 mathjax: true 
 highlighter: rouge
 
