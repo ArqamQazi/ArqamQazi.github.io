@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ڈیجیٹل مسجد ڈسپلے بورڈ (Smart Next Prayer)</title>
+    <title>ڈیجیٹل مسجد ڈسپلے بورڈ (Smart IP Location)</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Share+Tech+Mono&family=Amiri:wght@700&display=swap" rel="stylesheet">
     
     <style>
@@ -186,14 +186,14 @@
             <div class="bottom-info">
                 <span class="red" id="dayName">---</span>
                 <span class="orange">AUTO</span>
-                <span class="green">API</span>
+                <span class="green">SMART IP</span>
             </div>
         </div>
 
         <div class="col-right led-text">
             <div class="prayer-header">
                 <h2 class="cyan">TIMETABLE</h2>
-                <p class="red">NAVI MUMBAI, INDIA</p>
+                <p class="red" id="locationNameDisplay">DETECTING LOCATION...</p>
             </div>
             
             <table class="prayer-table">
@@ -244,7 +244,7 @@
     <div class="footer-wrapper">
         <div class="footer-scroll led-text cyan">
             <div class="scroll-text nastaleeq-text">
-                <span class="led-text">JAMA MASJID MARKAZ, TALOJA</span> &nbsp;&nbsp; | &nbsp;&nbsp; جامع مسجد مرکز تلوجہ &nbsp;&nbsp; | &nbsp;&nbsp; براہِ کرم اپنے موبائل فون بند رکھیں
+                <span class="led-text">JAMA MASJID MARKAZ</span> &nbsp;&nbsp; | &nbsp;&nbsp; جامع مسجد مرکز &nbsp;&nbsp; | &nbsp;&nbsp; براہِ کرم اپنے موبائل فون بند رکھیں
             </div>
         </div>
     </div>
@@ -252,28 +252,21 @@
     <script>
         window.prayerSchedule = [];
 
-        // 1. نیا اور اسمارٹ ٹریکنگ سسٹم جو جماعت کے بعد اگلی نماز لائے گا
         function updateActivePrayerTracking() {
             if (window.prayerSchedule.length === 0) return;
 
             let now = new Date();
-            // موجودہ وقت کو منٹوں میں تبدیل کریں (مثلاً دن کے 11:41 کا مطلب 701 منٹ)
             let nowTotalMins = (now.getHours() * 60) + now.getMinutes();
-
-            // بائی ڈیفالٹ ایکٹیو نماز فجر ہوگی (یعنی رات 12 بجے کے بعد سے)
             let activeIndex = 0; 
 
-            // تمام نمازوں کا شیڈول چیک کریں
             for (let i = 0; i < window.prayerSchedule.length; i++) {
-                // اگر موجودہ وقت، اس نماز کی جماعت ختم ہونے (جماعت + 15 منٹ) سے پہلے کا ہے، تو وہی نماز نظر آئے گی
+                // جماعت کے 10 منٹ بعد اگلی نماز لانے کا کوڈ
                 if (nowTotalMins < window.prayerSchedule[i].expireMins) {
                     activeIndex = i;
                     break;
                 }
             }
-            // اگر عشاء کا وقت بھی گزر چکا ہے تو لوپ کچھ نہیں بدلے گا اور activeIndex = 0 (یعنی اگلی صبح کی فجر) ہی رہے گا۔
 
-            // بیچ والے حصے میں منتخب شدہ نماز اپ ڈیٹ کریں
             let activePrayer = window.prayerSchedule[activeIndex];
             document.getElementById('currentPrayerName').innerHTML = `${activePrayer.en} <span class="nastaleeq-text" style="color: #00ffff; margin-right: 10px;">${activePrayer.ur}</span>`;
             document.getElementById('currentAzanTime').innerText = activePrayer.azan12;
@@ -297,18 +290,15 @@
                 document.getElementById('seconds').innerText = seconds;
                 document.getElementById('dayName').innerText = days[now.getDay()];
 
-                // ہر سیکنڈ ٹریکنگ اپ ڈیٹ کریں
                 updateActivePrayerTracking();
             } catch (e) { console.log(e); }
         }
 
-        // 24 گھنٹے والے وقت (مثلاً 14:30) کو کل منٹوں میں تبدیل کرنا
         function timeToMins(time24) {
             let [h, m] = time24.split(':');
             return (parseInt(h) * 60) + parseInt(m);
         }
 
-        // کل منٹوں کو خوبصورت 12 گھنٹے والے فارمیٹ میں لانا
         function formatMinsTo12(totalMins) {
             let h = Math.floor(totalMins / 60) % 24;
             let m = totalMins % 60;
@@ -323,44 +313,62 @@
             return (h % 12 || 12) + ':' + m;
         }
 
+        // نیا اور سمارٹ IP بیسڈ لوکیشن فنکشن
         async function fetchDailyTimes() {
-            const city = "Navi Mumbai"; 
-            const country = "India";
-            const url = `https://api.aladhan.com/v1/timingsByCity?city=${city}&country=${country}&method=1`;
-
             try {
+                document.getElementById('locationNameDisplay').innerText = "DETECTING LOCATION...";
+                
+                // بائی ڈیفالٹ نوی ممبئی
+                let city = "Navi Mumbai"; 
+                let country = "India";
+                
+                // 1. انٹرنیٹ کے IP ایڈریس سے شہر اور ملک کا نام نکالیں (بغیر پرمیشن کے!)
+                try {
+                    const locRes = await fetch('https://ipapi.co/json/');
+                    const locData = await locRes.json();
+                    if(locData.city && locData.country_name) {
+                        city = locData.city;
+                        country = locData.country_name;
+                    }
+                } catch(e) {
+                    console.log("IP Location Blocked or Failed. Using default.");
+                }
+
+                // 2. اس شہر کے حساب سے نماز کا ٹائم نکالیں
+                const url = `https://api.aladhan.com/v1/timingsByCity?city=${city}&country=${country}&method=1`;
                 const response = await fetch(url);
                 const result = await response.json();
                 const times = result.data.timings;
                 const date = result.data.date;
                 let isFriday = new Date().getDay() === 5; 
 
+                // سکرین پر شہر کا نام اپ ڈیٹ کریں
+                document.getElementById('locationNameDisplay').innerText = city.toUpperCase() + ", " + country.toUpperCase();
+
                 document.getElementById('gregorianDate').innerText = date.gregorian.date + ' ' + date.gregorian.month.en.toUpperCase();
                 document.getElementById('hijriDate').innerText = date.hijri.day + ' ' + date.hijri.month.en.toUpperCase() + ' ' + date.hijri.year;
 
-                document.getElementById('sahrTime').innerText = t12(times.Imsak);
-                document.getElementById('sahrTop').innerText = t12(times.Imsak);
+                document.getElementById('sahrTime').innerText = t12(times.Fajr);
+                
+document.getElementById('sahrTop').innerText = t12(times.Fajr);
                 document.getElementById('iftarTime').innerText = t12(times.Maghrib);
                 document.getElementById('iftarTop').innerText = t12(times.Maghrib);
                 document.getElementById('tuluTime').innerText = t12(times.Sunrise);
                 document.getElementById('gurubTime').innerText = t12(times.Sunset);
                 document.getElementById('zawalTime').innerText = t12(times.Dhuhr); 
 
-                // اذان کے اوقات کو منٹوں میں تبدیل کرنا
                 let fAzanMins = timeToMins(times.Fajr);
                 let zAzanMins = timeToMins(times.Dhuhr);
                 let aAzanMins = timeToMins(times.Asr);
                 let mAzanMins = timeToMins(times.Maghrib);
                 let iAzanMins = timeToMins(times.Isha);
 
-                // جماعت کا وقت نکالنا (راؤنڈنگ کے ساتھ)
                 let fJamaatMins = Math.ceil((fAzanMins + 20) / 5) * 5;
                 let zJamaatMins = isFriday ? Math.ceil((zAzanMins + 40) / 5) * 5 : Math.ceil((zAzanMins + 20) / 5) * 5;
                 let aJamaatMins = Math.ceil((aAzanMins + 20) / 5) * 5;
-                let mJamaatMins = mAzanMins + 6; // مغرب میں فکس 6 منٹ
+                let mJamaatMins = mAzanMins + 6; 
                 let iJamaatMins = Math.ceil((iAzanMins + 20) / 5) * 5;
 
-                // سکرین ٹیبل پر ڈیٹا دکھانا
                 document.getElementById('fajrAzan').innerText = t12(times.Fajr); document.getElementById('fajrJamaat').innerText = formatMinsTo12(fJamaatMins);
                 document.getElementById('zuharAzan').innerText = t12(times.Dhuhr); document.getElementById('zuharJamaat').innerText = formatMinsTo12(zJamaatMins);
                 document.getElementById('asrAzan').innerText = t12(times.Asr); document.getElementById('asrJamaat').innerText = formatMinsTo12(aJamaatMins);
@@ -372,19 +380,19 @@
                     document.getElementById('zuhrUrName').innerText = "جمعہ";
                 }
 
-                // آٹو ٹریکنگ کے لیے شیڈول محفوظ کرنا (جماعت کے 15 منٹ بعد اگلی نماز شروع ہوگی)
                 window.prayerSchedule = [
-                    { en: "FAJR", ur: "فجر", azan12: t12(times.Fajr), jamaat12: formatMinsTo12(fJamaatMins), expireMins: fJamaatMins + 15 },
-                    { en: isFriday ? "JUM'AH" : "ZUHAR", ur: isFriday ? "جمعہ" : "ظہر", azan12: t12(times.Dhuhr), jamaat12: formatMinsTo12(zJamaatMins), expireMins: zJamaatMins + 15 },
-                    { en: "ASR", ur: "عصر", azan12: t12(times.Asr), jamaat12: formatMinsTo12(aJamaatMins), expireMins: aJamaatMins + 15 },
-                    { en: "MAGRIB", ur: "مغرب", azan12: t12(times.Maghrib), jamaat12: formatMinsTo12(mJamaatMins), expireMins: mJamaatMins + 15 },
-                    { en: "ISHA'", ur: "عشاء", azan12: t12(times.Isha), jamaat12: formatMinsTo12(iJamaatMins), expireMins: iJamaatMins + 15 }
+                    { en: "FAJR", ur: "فجر", azan12: t12(times.Fajr), jamaat12: formatMinsTo12(fJamaatMins), expireMins: fJamaatMins + 10 },
+                    { en: isFriday ? "JUM'AH" : "ZUHAR", ur: isFriday ? "جمعہ" : "ظہر", azan12: t12(times.Dhuhr), jamaat12: formatMinsTo12(zJamaatMins), expireMins: zJamaatMins + 10 },
+                    { en: "ASR", ur: "عصر", azan12: t12(times.Asr), jamaat12: formatMinsTo12(aJamaatMins), expireMins: aJamaatMins + 10 },
+                    { en: "MAGRIB", ur: "مغرب", azan12: t12(times.Maghrib), jamaat12: formatMinsTo12(mJamaatMins), expireMins: mJamaatMins + 10 },
+                    { en: "ISHA'", ur: "عشاء", azan12: t12(times.Isha), jamaat12: formatMinsTo12(iJamaatMins), expireMins: iJamaatMins + 10 }
                 ];
 
                 updateActivePrayerTracking(); 
 
             } catch (error) {
                 console.log('Error:', error);
+                document.getElementById('locationNameDisplay').innerText = "NETWORK ERROR";
             }
         }
 
