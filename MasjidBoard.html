@@ -167,7 +167,9 @@
             <div class="calligraphy orange arabic-text">
                 <span>محمد ﷺ</span>
                 <span class="green" style="font-size: clamp(24px, 4vw, 44px);">بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ</span>
-                <span>اللّٰه جل جلاله</span>
+                <span>اللّٰه ﷻ
+
+</span>
             </div>
 
             <div class="main-clock orange">
@@ -191,8 +193,8 @@
             
             <div class="bottom-info">
                 <span class="red" id="dayName">---</span>
-                <span class="orange">AUTO</span>
-                <span class="green">SMART IP</span>
+                
+               
             </div>
         </div>
 
@@ -250,7 +252,7 @@
     <div class="footer-wrapper">
         <div class="footer-scroll led-text cyan">
             <div class="scroll-text nastaleeq-text">
-                <span class="led-text">JAMA MASJID MARKAZ</span> &nbsp;&nbsp; | &nbsp;&nbsp; جامع مسجد مرکز &nbsp;&nbsp; | &nbsp;&nbsp; براہِ کرم اپنے موبائل فون بند رکھیں
+                <span class="led-text">Please keep your mobile phones turned off</span> &nbsp;&nbsp; | &nbsp;&nbsp; جامع مسجد &nbsp;&nbsp; | &nbsp;&nbsp; براہِ کرم اپنے موبائل فون بند رکھیں
             </div>
         </div>
     </div>
@@ -284,7 +286,13 @@
                 let hours = now.getHours();
                 let minutes = now.getMinutes();
                 let seconds = now.getSeconds();
-                const days = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+                const daysEn = ["SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY"];
+const daysUr = ["اتوار", "پیر", "منگل", "بدھ", "جمعرات", "جمعہ", "ہفتہ"];
+
+let todayIndex = now.getDay();
+
+document.getElementById('dayName').innerHTML =
+    daysEn[todayIndex] + " | " + daysUr[todayIndex];
                 
                 let displayHours = hours % 12;
                 displayHours = displayHours ? displayHours : 12; 
