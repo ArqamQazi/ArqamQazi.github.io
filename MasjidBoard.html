@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="ur" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ڈیجیٹل مسجد ڈسپلے بورڈ (Smart Next Prayer)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Share+Tech+Mono&family=Amiri:wght@700&display=swap" rel="stylesheet">
+    
+    <style>
+        @font-face {
+            font-family: 'Payami Nastaleeq';
+            src: url('Payami Nastaleeq.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        * { box-sizing: border-box; }
+        body {
+            background-color: #111;
+            margin: 0;
+            padding: 10px;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .led-board {
+            background-color: #050505;
+            border: 8px solid #1a1a1a;
+            border-radius: 15px;
+            width: 100%;
+            max-width: 1200px;
+            margin: 10px auto; 
+            padding: 20px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.8), inset 0 0 20px rgba(0,0,0,1);
+            display: flex;
+            flex-wrap: wrap; 
+            justify-content: space-between;
+            direction: ltr;
+            gap: 20px;
+        }
+
+        .led-text { font-family: 'Share Tech Mono', monospace; font-weight: bold; letter-spacing: 1px; }
+        .arabic-text { font-family: 'Amiri', serif; font-weight: bold; }
+        
+        .nastaleeq-text { 
+            font-family: 'Payami Nastaleeq', 'Amiri', serif; 
+            font-weight: normal; 
+            font-size: clamp(24px, 3.5vw, 32px); 
+            line-height: 1;
+        }
+
+        .cyan { color: #00ffff; text-shadow: 0 0 8px #00ffff; }
+        .green { color: #00ff00; text-shadow: 0 0 8px #00ff00; }
+        .red { color: #ff3333; text-shadow: 0 0 8px #ff3333; }
+        .orange { color: #ffaa00; text-shadow: 0 0 8px #ffaa00; }
+        .white { color: #ffffff; text-shadow: 0 0 8px #ffffff; }
+        .pink { color: #ff00ff; text-shadow: 0 0 8px #ff00ff; }
+
+        .col-left { flex: 1; min-width: 250px; display: flex; flex-direction: column; gap: 15px; }
+        .col-center { flex: 2; min-width: 280px; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; border-left: 2px solid #333; border-right: 2px solid #333; padding: 0 15px; }
+        .col-right { flex: 1; min-width: 250px; display: flex; flex-direction: column; }
+
+        .date-section { font-size: clamp(12px, 2vw, 15px); line-height: 1.5; border-bottom: 2px solid #333; padding-bottom: 10px; text-align: center;}
+        .time-row { display: flex; justify-content: space-between; align-items: center; font-size: clamp(14px, 2vw, 18px); border-bottom: 1px dashed #333; padding: 5px 0; }
+        .time-label { display: flex; flex-direction: column; font-size: 12px; }
+        .ur-label { text-align: right; }
+
+        .calligraphy { display: flex; justify-content: space-between; width: 100%; font-size: clamp(18px, 3vw, 28px); margin-bottom: 10px; flex-wrap: wrap; text-align: center;}
+        
+        .main-clock { 
+            font-family: 'Orbitron', sans-serif; 
+            font-size: clamp(50px, 8vw, 90px); 
+            margin: 10px 0; 
+            line-height: 1; 
+            display: flex; 
+            align-items: flex-end; 
+            justify-content: center;
+            font-variant-numeric: tabular-nums; 
+        }
+        
+        .sec { font-size: clamp(20px, 3vw, 40px); margin-bottom: 10%; margin-left: 5px; width: 50px; text-align: left; }
+        
+        .current-prayer-display { text-align: center; margin-bottom: 15px; width: 100%; }
+        .current-prayer-name { font-size: clamp(20px, 3.5vw, 35px); letter-spacing: 2px; margin-bottom: 8px; }
+        .active-times-box { font-family: 'Orbitron', sans-serif; font-size: clamp(30px, 5vw, 45px); display: flex; justify-content: center; align-items: center; gap: 20px; flex-wrap: wrap; }
+        .time-group { display: flex; align-items: baseline; gap: 8px; }
+        .time-label-small { font-size: clamp(12px, 2vw, 16px); color: white; font-family: 'Share Tech Mono', monospace; letter-spacing: 1px; }
+
+        .bottom-info { display: flex; justify-content: center; gap: 20px; font-size: clamp(14px, 2vw, 18px); margin-top: 10px; }
+
+        .prayer-header { text-align: center; margin-bottom: 10px; border-bottom: 2px solid #333; padding-bottom: 5px; }
+        .prayer-header h2 { margin: 0; font-size: clamp(18px, 3vw, 24px); }
+        .prayer-header p { margin: 0; font-size: 12px; letter-spacing: 2px; }
+        
+        .prayer-table { width: 100%; border-collapse: collapse; }
+        .prayer-table th { font-size: 12px; padding-bottom: 5px; }
+        .prayer-table td { 
+            padding: 10px 5px; 
+            font-size: clamp(15px, 2vw, 20px); 
+            border-bottom: 1px solid #333; 
+            vertical-align: middle; 
+        }
+        .prayer-name { text-align: left; font-size: clamp(14px, 2vw, 16px); }
+        .prayer-time { text-align: center; min-width: 60px; }
+
+        .footer-wrapper { width: 100%; max-width: 1200px; margin: 15px auto; }
+        .footer-scroll { background: #000; width: 100%; padding: 10px; border: 2px solid #333; border-radius: 5px; overflow: hidden; white-space: nowrap; position: relative; }
+        .scroll-text {
+            display: inline-block;
+            font-size: clamp(16px, 2.5vw, 24px);
+            animation: moveLeft 15s linear infinite;
+        }
+        @keyframes moveLeft {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+
+        @media (max-width: 850px) {
+            .col-center { border-left: none; border-right: none; border-top: 2px solid #333; border-bottom: 2px solid #333; padding: 20px 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="led-board">
+        <div class="col-left led-text">
+            <div class="date-section">
+                <div class="cyan" id="gregorianDate">-- -- ----</div>
+                <div class="green" id="hijriDate">-- -- ----</div>
+                <div class="red">SAHR <span id="sahrTop">--:--</span> &nbsp; IFTAR <span id="iftarTop">--:--</span></div>
+            </div>
+
+            <div class="time-row mt-3">
+                <div class="time-label orange"><span>SAHR</span></div>
+                <div class="red" id="sahrTime">--:--</div>
+                <div class="ur-label orange nastaleeq-text">سحر</div>
+            </div>
+            <div class="time-row">
+                <div class="time-label orange"><span>IFTAR</span></div>
+                <div class="red" id="iftarTime">--:--</div>
+                <div class="ur-label orange nastaleeq-text">افطار</div>
+            </div>
+            
+            <div class="time-row" style="margin-top: 20px;">
+                <div class="time-label orange"><span>TULU'</span><span style="font-size:10px">start</span></div>
+                <div class="red" id="tuluTime">--:--</div>
+                <div class="ur-label orange nastaleeq-text">طلوع</div>
+            </div>
+            <div class="time-row">
+                <div class="time-label orange"><span>ZAWAL</span><span style="font-size:10px">end</span></div>
+                <div class="red" id="zawalTime">--:--</div>
+                <div class="ur-label orange nastaleeq-text">زوال</div>
+            </div>
+            <div class="time-row">
+                <div class="time-label orange"><span>GURUB</span><span style="font-size:10px">end</span></div>
+                <div class="red" id="gurubTime">--:--</div>
+                <div class="ur-label orange nastaleeq-text">غروب</div>
+            </div>
+        </div>
+
+        <div class="col-center led-text">
+            <div class="calligraphy orange arabic-text">
+                <span>محمد ﷺ</span>
+                <span class="green" style="font-size: clamp(20px, 3.5vw, 34px);">بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ</span>
+                <span>اللّٰه جل جلاله</span>
+            </div>
+
+            <div class="main-clock orange">
+                <span id="hoursMins">--:--</span>
+                <span class="sec" id="seconds">--</span>
+            </div>
+
+            <div class="current-prayer-display">
+                <div class="current-prayer-name cyan" id="currentPrayerName">WAITING...</div>
+                <div class="active-times-box">
+                    <div class="time-group">
+                        <span class="time-label-small">AZAN</span>
+                        <span class="red" id="currentAzanTime">--:--</span>
+                    </div>
+                    <div class="time-group">
+                        <span class="time-label-small">JAMAAT</span>
+                        <span class="green" id="currentJamaatTime">--:--</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bottom-info">
+                <span class="red" id="dayName">---</span>
+                <span class="orange">AUTO</span>
+                <span class="green">API</span>
+            </div>
+        </div>
+
+        <div class="col-right led-text">
+            <div class="prayer-header">
+                <h2 class="cyan">TIMETABLE</h2>
+                <p class="red">NAVI MUMBAI, INDIA</p>
+            </div>
+            
+            <table class="prayer-table">
+                <thead>
+                    <tr>
+                        <th class="cyan" style="text-align: left;">PRAYER</th>
+                        <th class="cyan">AZAN</th>
+                        <th class="white">JAMAAT</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="orange prayer-name">FAJR</td>
+                        <td class="red prayer-time" id="fajrAzan">--:--</td>
+                        <td class="green prayer-time" id="fajrJamaat">--:--</td>
+                        <td class="green nastaleeq-text ur-label">فجر</td>
+                    </tr>
+                    <tr>
+                        <td class="orange prayer-name" id="zuhrEnName">ZUHAR</td>
+                        <td class="red prayer-time" id="zuharAzan">--:--</td>
+                        <td class="green prayer-time" id="zuharJamaat">--:--</td>
+                        <td class="green nastaleeq-text ur-label" id="zuhrUrName">ظہر</td>
+                    </tr>
+                    <tr>
+                        <td class="orange prayer-name">ASR</td>
+                        <td class="red prayer-time" id="asrAzan">--:--</td>
+                        <td class="green prayer-time" id="asrJamaat">--:--</td>
+                        <td class="green nastaleeq-text ur-label">عصر</td>
+                    </tr>
+                    <tr>
+                        <td class="orange prayer-name">MAGRIB</td>
+                        <td class="red prayer-time" id="magribAzan">--:--</td>
+                        <td class="green prayer-time" id="magribJamaat">--:--</td>
+                        <td class="green nastaleeq-text ur-label">مغرب</td>
+                    </tr>
+                    <tr>
+                        <td class="orange prayer-name">ISHA'</td>
+                        <td class="red prayer-time" id="ishaAzan">--:--</td>
+                        <td class="green prayer-time" id="ishaJamaat">--:--</td>
+                        <td class="green nastaleeq-text ur-label">عشاء</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="footer-wrapper">
+        <div class="footer-scroll led-text cyan">
+            <div class="scroll-text nastaleeq-text">
+                <span class="led-text">JAMA MASJID MARKAZ, TALOJA</span> &nbsp;&nbsp; | &nbsp;&nbsp; جامع مسجد مرکز تلوجہ &nbsp;&nbsp; | &nbsp;&nbsp; براہِ کرم اپنے موبائل فون بند رکھیں
+            </div>
+        </div>
+    </div>
+
+    <script>
+        window.prayerSchedule = [];
+
+        // 1. نیا اور اسمارٹ ٹریکنگ سسٹم جو جماعت کے بعد اگلی نماز لائے گا
+        function updateActivePrayerTracking() {
+            if (window.prayerSchedule.length === 0) return;
+
+            let now = new Date();
+            // موجودہ وقت کو منٹوں میں تبدیل کریں (مثلاً دن کے 11:41 کا مطلب 701 منٹ)
+            let nowTotalMins = (now.getHours() * 60) + now.getMinutes();
+
+            // بائی ڈیفالٹ ایکٹیو نماز فجر ہوگی (یعنی رات 12 بجے کے بعد سے)
+            let activeIndex = 0; 
+
+            // تمام نمازوں کا شیڈول چیک کریں
+            for (let i = 0; i < window.prayerSchedule.length; i++) {
+                // اگر موجودہ وقت، اس نماز کی جماعت ختم ہونے (جماعت + 15 منٹ) سے پہلے کا ہے، تو وہی نماز نظر آئے گی
+                if (nowTotalMins < window.prayerSchedule[i].expireMins) {
+                    activeIndex = i;
+                    break;
+                }
+            }
+            // اگر عشاء کا وقت بھی گزر چکا ہے تو لوپ کچھ نہیں بدلے گا اور activeIndex = 0 (یعنی اگلی صبح کی فجر) ہی رہے گا۔
+
+            // بیچ والے حصے میں منتخب شدہ نماز اپ ڈیٹ کریں
+            let activePrayer = window.prayerSchedule[activeIndex];
+            document.getElementById('currentPrayerName').innerHTML = `${activePrayer.en} <span class="nastaleeq-text" style="color: #00ffff; margin-right: 10px;">${activePrayer.ur}</span>`;
+            document.getElementById('currentAzanTime').innerText = activePrayer.azan12;
+            document.getElementById('currentJamaatTime').innerText = activePrayer.jamaat12;
+        }
+
+        function updateLiveClock() {
+            try {
+                const now = new Date();
+                let hours = now.getHours();
+                let minutes = now.getMinutes();
+                let seconds = now.getSeconds();
+                const days = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+                
+                let displayHours = hours % 12;
+                displayHours = displayHours ? displayHours : 12; 
+                minutes = minutes < 10 ? '0' + minutes : minutes;
+                seconds = seconds < 10 ? '0' + seconds : seconds;
+
+                document.getElementById('hoursMins').innerText = displayHours + ':' + minutes;
+                document.getElementById('seconds').innerText = seconds;
+                document.getElementById('dayName').innerText = days[now.getDay()];
+
+                // ہر سیکنڈ ٹریکنگ اپ ڈیٹ کریں
+                updateActivePrayerTracking();
+            } catch (e) { console.log(e); }
+        }
+
+        // 24 گھنٹے والے وقت (مثلاً 14:30) کو کل منٹوں میں تبدیل کرنا
+        function timeToMins(time24) {
+            let [h, m] = time24.split(':');
+            return (parseInt(h) * 60) + parseInt(m);
+        }
+
+        // کل منٹوں کو خوبصورت 12 گھنٹے والے فارمیٹ میں لانا
+        function formatMinsTo12(totalMins) {
+            let h = Math.floor(totalMins / 60) % 24;
+            let m = totalMins % 60;
+            let h12 = h % 12 || 12;
+            let mStr = m < 10 ? '0' + m : m;
+            return h12 + ':' + mStr;
+        }
+
+        function t12(time24) {
+            let [h, m] = time24.split(':');
+            h = parseInt(h);
+            return (h % 12 || 12) + ':' + m;
+        }
+
+        async function fetchDailyTimes() {
+            const city = "Navi Mumbai"; 
+            const country = "India";
+            const url = `https://api.aladhan.com/v1/timingsByCity?city=${city}&country=${country}&method=1`;
+
+            try {
+                const response = await fetch(url);
+                const result = await response.json();
+                const times = result.data.timings;
+                const date = result.data.date;
+                let isFriday = new Date().getDay() === 5; 
+
+                document.getElementById('gregorianDate').innerText = date.gregorian.date + ' ' + date.gregorian.month.en.toUpperCase();
+                document.getElementById('hijriDate').innerText = date.hijri.day + ' ' + date.hijri.month.en.toUpperCase() + ' ' + date.hijri.year;
+
+                document.getElementById('sahrTime').innerText = t12(times.Imsak);
+                document.getElementById('sahrTop').innerText = t12(times.Imsak);
+                document.getElementById('iftarTime').innerText = t12(times.Maghrib);
+                document.getElementById('iftarTop').innerText = t12(times.Maghrib);
+                document.getElementById('tuluTime').innerText = t12(times.Sunrise);
+                document.getElementById('gurubTime').innerText = t12(times.Sunset);
+                document.getElementById('zawalTime').innerText = t12(times.Dhuhr); 
+
+                // اذان کے اوقات کو منٹوں میں تبدیل کرنا
+                let fAzanMins = timeToMins(times.Fajr);
+                let zAzanMins = timeToMins(times.Dhuhr);
+                let aAzanMins = timeToMins(times.Asr);
+                let mAzanMins = timeToMins(times.Maghrib);
+                let iAzanMins = timeToMins(times.Isha);
+
+                // جماعت کا وقت نکالنا (راؤنڈنگ کے ساتھ)
+                let fJamaatMins = Math.ceil((fAzanMins + 20) / 5) * 5;
+                let zJamaatMins = isFriday ? Math.ceil((zAzanMins + 40) / 5) * 5 : Math.ceil((zAzanMins + 20) / 5) * 5;
+                let aJamaatMins = Math.ceil((aAzanMins + 20) / 5) * 5;
+                let mJamaatMins = mAzanMins + 6; // مغرب میں فکس 6 منٹ
+                let iJamaatMins = Math.ceil((iAzanMins + 20) / 5) * 5;
+
+                // سکرین ٹیبل پر ڈیٹا دکھانا
+                document.getElementById('fajrAzan').innerText = t12(times.Fajr); document.getElementById('fajrJamaat').innerText = formatMinsTo12(fJamaatMins);
+                document.getElementById('zuharAzan').innerText = t12(times.Dhuhr); document.getElementById('zuharJamaat').innerText = formatMinsTo12(zJamaatMins);
+                document.getElementById('asrAzan').innerText = t12(times.Asr); document.getElementById('asrJamaat').innerText = formatMinsTo12(aJamaatMins);
+                document.getElementById('magribAzan').innerText = t12(times.Maghrib); document.getElementById('magribJamaat').innerText = formatMinsTo12(mJamaatMins);
+                document.getElementById('ishaAzan').innerText = t12(times.Isha); document.getElementById('ishaJamaat').innerText = formatMinsTo12(iJamaatMins);
+
+                if(isFriday) {
+                    document.getElementById('zuhrEnName').innerText = "JUM'AH";
+                    document.getElementById('zuhrUrName').innerText = "جمعہ";
+                }
+
+                // آٹو ٹریکنگ کے لیے شیڈول محفوظ کرنا (جماعت کے 15 منٹ بعد اگلی نماز شروع ہوگی)
+                window.prayerSchedule = [
+                    { en: "FAJR", ur: "فجر", azan12: t12(times.Fajr), jamaat12: formatMinsTo12(fJamaatMins), expireMins: fJamaatMins + 15 },
+                    { en: isFriday ? "JUM'AH" : "ZUHAR", ur: isFriday ? "جمعہ" : "ظہر", azan12: t12(times.Dhuhr), jamaat12: formatMinsTo12(zJamaatMins), expireMins: zJamaatMins + 15 },
+                    { en: "ASR", ur: "عصر", azan12: t12(times.Asr), jamaat12: formatMinsTo12(aJamaatMins), expireMins: aJamaatMins + 15 },
+                    { en: "MAGRIB", ur: "مغرب", azan12: t12(times.Maghrib), jamaat12: formatMinsTo12(mJamaatMins), expireMins: mJamaatMins + 15 },
+                    { en: "ISHA'", ur: "عشاء", azan12: t12(times.Isha), jamaat12: formatMinsTo12(iJamaatMins), expireMins: iJamaatMins + 15 }
+                ];
+
+                updateActivePrayerTracking(); 
+
+            } catch (error) {
+                console.log('Error:', error);
+            }
+        }
+
+        window.onload = function() {
+            setInterval(updateLiveClock, 1000); 
+            updateLiveClock(); 
+            fetchDailyTimes(); 
+            setInterval(fetchDailyTimes, 1000 * 60 * 60 * 24); 
+        };
+    </script>
+</body>
+</html>
