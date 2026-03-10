@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ڈیجیٹل مسجد ڈسپلے بورڈ (Perfect Fit & Fixed Layout)</title>
+    <title>ڈیجیٹل مسجد ڈسپلے بورڈ (Professional TV Layout)</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Share+Tech+Mono&family=Amiri:wght@700&display=swap" rel="stylesheet">
     
     <style>
         :root {
+            /* Keep all your existing color variables */
             --c-bg: #050505;
             --c-panel: #080808;
             --c-board: #030303;
@@ -49,37 +50,42 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            height: 100vh; /* اسکرین کی لمبائی فکس کی گئی ہے تاکہ پٹی نہ چھپے */
-            overflow: hidden;
-            cursor: pointer; 
+            height: 100vh;
+            overflow: hidden; /* Absolute prevention of scrolling out of bounds */
+            cursor: default; 
+        }
+
+        /* --- TV Remote Focus Outline Support --- */
+        *:focus {
+            outline: 3px solid var(--c-headers) !important;
+            outline-offset: 2px !important;
+            box-shadow: 0 0 15px var(--c-headers);
         }
 
         .led-board {
             background: linear-gradient(180deg, var(--c-board, #030303) 0%, #000 100%);
-            border: 4px solid #1a2a1a;
-            border-radius: 10px;
+            border: 1px solid #1a2a1a; /* Thinner border for cleaner look */
+            border-radius: 8px;
             width: 100%;
-            max-width: 100%; 
-            flex: 1; /* بورڈ کو بچی ہوئی جگہ لینے کی کمانڈ */
+            flex: 1; 
             min-height: 0;
             padding: 2vh 2vw;
-            box-shadow: 0 0 60px rgba(0, 0, 0, 0.95), 0 0 0 1px rgba(0, 255, 200, 0.05);
-            display: flex;
-            flex-wrap: wrap; 
-            justify-content: space-between;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.9);
             direction: ltr;
-            gap: 2vw;
             transition: all 0.5s ease;
+        }
+
+        /* --- Grid Layout to Prevent Overlap and strictly fix boundaries --- */
+        body[data-mode="all"] .led-board {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(0, 2fr) minmax(0, 1fr);
+            gap: 2vw;
+            align-items: stretch;
         }
 
         .led-text { font-family: 'Share Tech Mono', 'Orbitron', monospace; font-weight: 700; }
         .arabic-text { font-family: 'Amiri', serif; font-weight: bold; }
-        
-        .nastaleeq-text { 
-            font-family: 'Amiri', serif; 
-            font-weight: bold; 
-            line-height: 1.2;
-        }
+        .nastaleeq-text { font-family: 'Amiri', serif; font-weight: bold; line-height: 1.1; }
 
         .col-date-g { color: var(--c-date-g); text-shadow: none; }
         .col-date-h { color: var(--c-date-h); text-shadow: none; }
@@ -94,140 +100,118 @@
 
         .col-left, .col-center, .col-right {
             background-color: var(--c-panel);
-            border: 2px solid #151515;
-            border-radius: 12px;
-            box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.9), 0 2px 10px rgba(0, 0, 0, 0.5);
-            transition: all 0.5s ease;
+            border: 1px solid #1a1a1a; /* Flat professional look like Image 2 */
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
         }
 
-        .col-left { flex: 1; min-width: 250px; display: flex; flex-direction: column; gap: 1.5vh; padding: 1.5vh 1.5vw; justify-content: space-between;}
-        .col-center { flex: 2; min-width: 280px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2vh; padding: 2.5vh 2.5vw; border-color: #1a1a1a; box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.95), 0 0 0 1px rgba(0, 200, 255, 0.08); }
-        .col-right { flex: 1; min-width: 300px; display: flex; flex-direction: column; gap: 1.5vh; padding: 1.5vh 1.5vw; justify-content: space-between;}
+        .col-left, .col-right { padding: 1.5vh 1.5vw; justify-content: space-between; gap: 1vh; }
+        .col-center { padding: 2vh 2vw; justify-content: space-between; align-items: center; }
 
         .panel-box {
-            background-color: rgba(20, 20, 20, 0.4);
-            border: 1px solid #1f2f1f;
-            border-radius: 8px;
-            padding: 1.2vh 1vw;
+            background-color: transparent; /* Makes the layout breathe more */
+            border: 1px solid #1a1a1a;
+            border-radius: 6px;
+            padding: 1.5vh 1vw;
             width: 100%;
-            box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.6);
         }
 
-        .shared-en-name { font-size: clamp(14px, 1.8vw, 20px); letter-spacing: 1px; font-weight: 700; }
-        .shared-time { font-size: clamp(16px, 2.2vw, 24px); letter-spacing: 1px; font-weight: 700; }
+        /* Perfectly Auto-scaling Typography using vh/vw mixing */
+        .shared-en-name { font-size: min(1.8vw, 2.5vh); letter-spacing: 1px; font-weight: 700; }
+        .shared-time { font-size: min(2.2vw, 3.2vh); letter-spacing: 1px; font-weight: 700; font-family: 'Orbitron', sans-serif;}
         .shared-ur-name { font-size: var(--ur-size); }
 
-        .date-section { text-align: center; display: flex; flex-direction: column; gap: 0.5vh; }
-        .date-section .col-date-g { font-size: clamp(14px, 2vw, 22px); }
-        .hijri-date-ar { font-family: 'Amiri', 'Share Tech Mono', serif; font-size: clamp(16px, 2.2vw, 24px); }
+        .date-section { text-align: center; display: flex; flex-direction: column; gap: 0.8vh; border: none; padding-top: 0;}
+        .date-section .col-date-g { font-size: min(1.8vw, 2.8vh); letter-spacing: 1px; }
+        .hijri-date-ar { font-size: min(2.2vw, 3.2vh); }
+        .sahr-iftar-top { font-size: min(1.5vw, 2.2vh) !important; font-family: 'Share Tech Mono', sans-serif !important; border-top: 1px solid #1a1a1a; padding-top: 1vh;}
         
-        .time-row { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dotted #1a2a2a; padding: 0.8vh 0; white-space: nowrap; gap: 0.5vw; }
-        .time-row:last-child { border-bottom: none; }
-        .time-label { display: flex; flex-direction: column; flex: 1; text-align: left;}
-        .time-row .col-azan, .time-row .col-jamaat { flex: 1; text-align: center; padding: 0 5px; } /* اسپیسنگ شامل کی گئی */
+        .time-row { display: flex; justify-content: space-between; align-items: center; padding: 0.8vh 0; white-space: nowrap; gap: 0.5vw; }
+        .time-label { flex: 1; text-align: left; }
+        .time-row .col-azan, .time-row .col-jamaat { flex: 1; text-align: center; }
         .ur-label { text-align: right; flex: 1; } 
 
-        .calligraphy { display: flex; justify-content: space-between; align-items: center; width: 100%; font-size: clamp(22px, 3.2vw, 42px); margin-bottom: 2vh; gap: 1.5vw; flex-wrap: nowrap; white-space: nowrap; text-align: center; }
-        .calligraphy .bismillah { flex: 1; color: var(--c-date-h); text-shadow: none; font-family: 'Amiri', serif; font-weight: 700; }
-        .calligraphy .badge { width: clamp(42px, 5vw, 58px); height: clamp(42px, 5vw, 58px); display: flex; align-items: center; justify-content: center; border: 2px solid var(--c-pr-en); border-radius: 50%; color: var(--c-pr-en); font-size: 0.48em; box-shadow: none; }
+        /* Calligraphy styling aligned with Image 2 */
+        .calligraphy { display: flex; justify-content: space-between; align-items: center; width: 100%; font-size: min(3.5vw, 5vh); white-space: nowrap; margin-bottom: 0;}
+        .calligraphy .bismillah { flex: 1; text-align: center; color: var(--c-date-h); font-weight: 700; }
+        .calligraphy .badge { width: min(4vw, 6vh); height: min(4vw, 6vh); display: flex; align-items: center; justify-content: center; border: 2px solid var(--c-pr-en); border-radius: 50%; color: var(--c-pr-en); font-size: 0.4em; }
         
-        .main-clock { font-family: 'Orbitron', sans-serif; font-size: clamp(72px, 11vw, 160px); margin: 2vh 0; line-height: 1; display: flex; align-items: baseline; justify-content: center; font-variant-numeric: tabular-nums; flex-wrap: nowrap; white-space: nowrap; font-weight: 700; letter-spacing: 4px; }
-        .sec { font-size: clamp(28px, 4.5vw, 55px); margin-left: 12px; opacity: 0.9; }
+        /* Main Clock precisely aligned at baseline so seconds don't overlap */
+        .main-clock { font-family: 'Orbitron', sans-serif; font-size: min(13vw, 20vh); display: flex; align-items: baseline; justify-content: center; line-height: 1; font-weight: 700; letter-spacing: 2px; margin: 1vh 0; }
+        .sec { font-size: 0.35em; margin-left: 1vw; opacity: 0.9; transform: translateY(-1vh); }
         #seconds { color: var(--c-seconds); }
         
-        .current-prayer-display { text-align: center; margin-bottom: 2vh; width: 100%; }
-        .current-prayer-name { display: flex; justify-content: center; align-items: center; gap: 1.2vw; font-size: clamp(28px, 4.5vw, 52px); letter-spacing: 3px; margin-bottom: 1vh; white-space: nowrap; flex-wrap: nowrap; }
+        .current-prayer-display { text-align: center; width: 100%; display: flex; flex-direction: column; justify-content: center; gap: 1vh; }
+        .current-prayer-name { font-size: min(3.5vw, 5vh); letter-spacing: 2px; display: flex; justify-content: center; align-items: center; gap: 1vw;}
         
-        .active-times-box { font-family: 'Orbitron', sans-serif; font-size: clamp(38px, 6.5vw, 72px); display: flex; justify-content: center; align-items: center; gap: 4vw; flex-wrap: nowrap; white-space: nowrap; }
-        .time-group { display: flex; flex-direction: column; align-items: center; gap: 4px; min-width: 80px; }
-        .time-label-small { font-size: clamp(12px, 1.6vw, 18px); color: rgba(255,255,255,0.9); font-family: 'Share Tech Mono', monospace; letter-spacing: 2px; }
+        .active-times-box { font-family: 'Orbitron', sans-serif; font-size: min(6vw, 9vh); display: flex; justify-content: center; align-items: center; gap: 4vw; }
+        .time-group { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+        .time-label-small { font-size: min(1.5vw, 2.2vh); color: rgba(255,255,255,0.7); letter-spacing: 2px; font-family: 'Share Tech Mono', monospace;}
 
-        .bottom-info { display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 0.8vh; font-size: clamp(14px, 2vw, 22px); margin-top: auto; width: 100%; }
-        .jamaat-notify-row { display: flex; align-items: center; justify-content: center; gap: 0.8vw; margin-bottom: 4px; }
-        .jamaat-icon { font-size: clamp(18px, 2.2vw, 26px); opacity: 0.95; }
-        .jamaat-countdown { font-family: 'Orbitron','Share Tech Mono',monospace; font-size: clamp(14px, 1.8vw, 20px); font-weight: 700; letter-spacing: 1px; }
-        .location-temp-row { display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 0 8%; font-size: clamp(13px, 1.8vw, 20px); color: rgba(255,255,255,0.85); flex-wrap: nowrap; white-space: nowrap; gap: 2vw; }
+        .bottom-info { display: flex; flex-direction: column; justify-content: flex-end; align-items: center; gap: 1vh; width: 100%; }
+        .jamaat-notify-row { display: flex; align-items: center; justify-content: center; gap: 0.8vw; }
+        .jamaat-icon { font-size: min(2vw, 3vh); opacity: 0.95; }
+        .jamaat-countdown { font-family: 'Orbitron', monospace; font-size: min(1.8vw, 2.6vh); font-weight: 700; letter-spacing: 1px; }
+        .location-temp-row { display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 0 5%; font-size: min(1.5vw, 2.2vh); color: rgba(255,255,255,0.6); }
 
-        .prayer-header { display: flex; justify-content: space-between; align-items: center; }
-        .prayer-header-side { display: flex; flex-direction: column; align-items: center; color: rgba(255,255,255,0.9); }
-        .prayer-header-side span:first-child { font-size: clamp(10px, 1.2vw, 14px); }
-        .prayer-header-side span:last-child { font-size: clamp(16px, 2.5vw, 24px); font-variant-numeric: tabular-nums; }
-        .prayer-header h2 { margin: 0; font-size: clamp(22px, 3.2vw, 38px); white-space: nowrap; }
+        .prayer-header { display: flex; justify-content: space-between; align-items: center; padding: 1vh 1vw; border: none; border-bottom: 1px solid #1a1a1a; margin-bottom: 0.5vh;}
+        .prayer-header-side { display: flex; flex-direction: column; align-items: center; color: rgba(255,255,255,0.7); gap: 2px;}
+        .prayer-header-side span:first-child { font-size: min(1vw, 1.5vh); letter-spacing: 1px;}
+        .prayer-header-side span:last-child { font-size: min(2vw, 3vh); font-family: 'Orbitron', sans-serif;}
+        .prayer-header h2 { margin: 0; font-size: min(2.5vw, 4vh); letter-spacing: 2px; }
         
-        /* خلط ملط روکنے کے لئے ٹیبل کی نئی اور مضبوط سیٹنگ */
-        .prayer-table { width: 100%; border-collapse: collapse; margin: 0 auto; table-layout: auto; }
-        .prayer-table th { 
-            font-size: clamp(10px, 1.3vw, 14px); 
-            padding: 1vh 0.8vw; 
-            border-bottom: 1px solid #1a2a2a; 
-            letter-spacing: 1px; 
-        }
-        .prayer-table td { 
-            padding: 1vh 0.8vw; 
-            border-bottom: 1px dotted #1a2a2a; 
-            vertical-align: middle; 
-            white-space: nowrap; 
-        }
-        .prayer-table tr:last-child td { border-bottom: none; }
+        /* Fixed Table Layout to ensure perfectly aligned columns (No zigzag text) */
+        .prayer-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+        .prayer-table th { font-size: min(1.2vw, 1.8vh); padding: 1vh 0; border-bottom: 1px solid #1a1a1a; letter-spacing: 1px; color: rgba(255,255,255,0.6); font-weight: normal;}
+        .prayer-table td { padding: 1vh 0; vertical-align: middle; white-space: nowrap; }
         
-        /* کالمز کی چوڑائی اور سیدھ مقرر کر دی گئی ہے تاکہ ٹکرائیں نہیں */
-        .prayer-table th:nth-child(1), .prayer-table td:nth-child(1) { text-align: left; width: 15%; padding-right: 5px; border-right: 1px solid #2a3a2a; }
-        .prayer-table th:nth-child(2), .prayer-table td:nth-child(2) { text-align: center; width: 30%; }
-        .prayer-table th:nth-child(3), .prayer-table td:nth-child(3) { border-left: 1px solid #2a3a2a; text-align: center; width: 30%; }
-        .prayer-table th:nth-child(4), .prayer-table td:nth-child(4) { border-left: 1px solid #2a3a2a; text-align: right; width: 25%; padding-left: 5px;}
+        .prayer-table th:nth-child(1), .prayer-table td:nth-child(1) { text-align: left; width: 22%; }
+        .prayer-table th:nth-child(2), .prayer-table td:nth-child(2) { text-align: center; width: 28%; }
+        .prayer-table th:nth-child(3), .prayer-table td:nth-child(3) { text-align: center; width: 28%; }
+        .prayer-table th:nth-child(4), .prayer-table td:nth-child(4) { text-align: right; width: 22%; }
 
-        .prayer-table .col-azan { color: #ff6666 !important; font-weight: 700; }
-        .prayer-table .col-jamaat { color: #44ff66 !important; font-weight: 700; }
-        #fajrAzan { color: var(--c-azan-fajr) !important; }
-        #fajrJamaat { color: var(--c-jamaat-fajr) !important; }
-        #zuharAzan { color: var(--c-azan-dhuhr) !important; }
-        #zuharJamaat { color: var(--c-jamaat-dhuhr) !important; }
-        #asrAzan { color: var(--c-azan-asr) !important; }
-        #asrJamaat { color: var(--c-jamaat-asr) !important; }
-        #magribAzan { color: var(--c-azan-maghrib) !important; }
-        #magribJamaat { color: var(--c-jamaat-maghrib) !important; }
-        #ishaAzan { color: var(--c-azan-isha) !important; }
-        #ishaJamaat { color: var(--c-jamaat-isha) !important; }
-        #jumuahAzan { color: var(--c-azan-jumuah) !important; }
-        #jumuahJamaat { color: var(--c-jamaat-jumuah) !important; }
+        #fajrAzan { color: var(--c-azan-fajr) !important; } #fajrJamaat { color: var(--c-jamaat-fajr) !important; }
+        #zuharAzan { color: var(--c-azan-dhuhr) !important; } #zuharJamaat { color: var(--c-jamaat-dhuhr) !important; }
+        #asrAzan { color: var(--c-azan-asr) !important; } #asrJamaat { color: var(--c-jamaat-asr) !important; }
+        #magribAzan { color: var(--c-azan-maghrib) !important; } #magribJamaat { color: var(--c-jamaat-maghrib) !important; }
+        #ishaAzan { color: var(--c-azan-isha) !important; } #ishaJamaat { color: var(--c-jamaat-isha) !important; }
+        #jumuahAzan { color: var(--c-azan-jumuah) !important; } #jumuahJamaat { color: var(--c-jamaat-jumuah) !important; }
 
-        .tomorrow-box { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+        .tomorrow-box { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 0.5vh; border: none; border-top: 1px solid #1a1a1a; padding-top: 1.5vh; }
 
-        /* پٹی کو کٹنے سے بچانے کے لئے flex-shrink: 0 شامل کیا گیا ہے */
-        .footer-wrapper { width: 100%; max-width: 100%; margin-top: 1.5vh; flex-shrink: 0; margin-bottom: 0.5vh;}
-        .footer-scroll { background: #0a0a0a; width: 100%; padding: 1.2vh 1.5vw; border: 2px solid #1a2a2a; border-radius: 10px; overflow: hidden; white-space: nowrap; position: relative; box-shadow: inset 0 0 20px rgba(0,0,0,0.8); }
+        /* Sleek, thin footer scroll */
+        .footer-wrapper { width: 100%; margin-top: 1.5vh; flex-shrink: 0; margin-bottom: 0.5vh;}
+        .footer-scroll { background: var(--c-panel); width: 100%; padding: 0.8vh 1.5vw; border: 1px solid #1a1a1a; border-radius: 6px; overflow: hidden; white-space: nowrap; position: relative; }
         
-        .scroll-text { display: inline-block; font-size: clamp(22px, 3.2vw, 36px); font-weight: 700; letter-spacing: 2px; animation: moveLeft 25s linear infinite; }
+        .scroll-text { display: inline-block; font-size: min(2vw, 3.2vh); font-weight: 700; letter-spacing: 1px; animation: moveLeft 25s linear infinite; }
         @keyframes moveLeft { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
-
         .static-scroll { animation: none !important; display: block !important; text-align: center; width: 100%; transform: none !important; white-space: normal !important; overflow: hidden;}
 
-        .top-buttons { position: fixed; top: 5px; right: 15px; display: flex; gap: 10px; z-index: 9999; }
-        .settings-btn, .lock-btn { background: transparent; color: #555; border: none; cursor: pointer; font-size: 20px; opacity: 0.3; transition: 0.3s; }
-        .settings-btn:hover, .lock-btn:hover { opacity: 1; color: var(--c-headers); text-shadow: none; }
+        .top-buttons { position: fixed; top: 10px; right: 20px; display: flex; gap: 15px; z-index: 9999; }
+        .settings-btn, .lock-btn { background: transparent; color: #555; border: none; cursor: pointer; font-size: min(2vw, 24px); opacity: 0.4; transition: 0.3s; padding: 5px; border-radius: 5px;}
+        .settings-btn:hover, .lock-btn:hover, .settings-btn:focus, .lock-btn:focus { opacity: 1; color: var(--c-headers); text-shadow: none; }
         .lock-btn.locked { opacity: 1; }
         
-        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.85); justify-content: center; align-items: center; }
-        .modal-content { background-color: #1a1a1a; border: 2px solid var(--c-headers); border-radius: 10px; width: 95%; max-width: 900px; max-height: 90vh; overflow-y: auto; padding: 20px; color: white; direction: rtl; }
-        .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #444; padding-bottom: 10px; margin-bottom: 20px; }
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.9); justify-content: center; align-items: center; }
+        .modal-content { background-color: #111; border: 1px solid var(--c-headers); border-radius: 8px; width: 95%; max-width: 900px; max-height: 90vh; overflow-y: auto; padding: 25px; color: white; direction: rtl; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; padding-bottom: 15px; margin-bottom: 20px; }
         .modal-header h2 { margin: 0; color: var(--c-headers); font-family: 'Share Tech Mono', sans-serif;}
-        .close-btn { font-size: 28px; font-weight: bold; cursor: pointer; color: #ff3333; }
+        .close-btn { font-size: 32px; font-weight: bold; cursor: pointer; color: #ff3333; background: none; border: none; border-radius: 5px; padding: 0 10px;}
         
-        .settings-section { margin-bottom: 25px; border: 1px solid #333; padding: 15px; border-radius: 8px; background: #111; }
-        .settings-section h3 { margin-top: 0; color: #ffaa00; border-bottom: 1px dashed #444; padding-bottom: 5px; margin-bottom: 15px; font-family: 'Share Tech Mono', sans-serif;}
+        .settings-section { margin-bottom: 25px; border: 1px solid #222; padding: 15px; border-radius: 6px; background: #0a0a0a; }
+        .settings-section h3 { margin-top: 0; color: #ffaa00; border-bottom: 1px dashed #333; padding-bottom: 8px; margin-bottom: 15px; font-family: 'Share Tech Mono', sans-serif;}
         
         .table-responsive { width: 100%; }
         table.config-table { width: 100%; border-collapse: collapse; text-align: center; }
-        table.config-table th, table.config-table td { border: 1px solid #444; padding: 8px; vertical-align: middle; }
-        table.config-table th { background-color: #222; font-size: 14px; }
-        table.config-table select, table.config-table input[type="time"] { background: #333; color: white; border: 1px solid #555; padding: 5px; border-radius: 4px; outline: none; width: 100%; font-family: 'Share Tech Mono', sans-serif;}
+        table.config-table th, table.config-table td { border: 1px solid #333; padding: 10px; vertical-align: middle; }
+        table.config-table th { background-color: #1a1a1a; font-size: 14px; color: #aaa;}
+        table.config-table select, table.config-table input[type="time"] { background: #222; color: white; border: 1px solid #444; padding: 6px; border-radius: 4px; outline: none; width: 100%; font-family: 'Share Tech Mono', sans-serif;}
         
         @media (max-width: 768px) {
             .table-responsive table.config-table thead { display: none; }
-            .table-responsive table.config-table, 
-            .table-responsive table.config-table tbody, 
-            .table-responsive table.config-table tr, 
-            .table-responsive table.config-table td { display: block; width: 100%; }
+            .table-responsive table.config-table, .table-responsive table.config-table tbody, .table-responsive table.config-table tr, .table-responsive table.config-table td { display: block; width: 100%; }
             .table-responsive table.config-table tr { margin-bottom: 15px; background: #1a1a1a; border: 1px solid #444; border-radius: 8px; padding: 10px; }
             .table-responsive table.config-table td { border: none; text-align: right; padding: 8px 0; border-bottom: 1px dotted #333; display: flex; flex-direction: column; gap: 5px;}
             .table-responsive table.config-table td:last-child { border-bottom: none; }
@@ -235,37 +219,31 @@
         }
 
         .adv-color-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 15px; }
-        .color-item { display: flex; flex-direction: column; align-items: center; gap: 5px; background: #222; padding: 10px; border-radius: 8px; border: 1px solid #333; }
-        .color-item span { font-size: 12px; text-align: center; }
-        .color-item input[type="color"] { width: 100%; height: 40px; border: none; cursor: pointer; border-radius: 5px; background: transparent; padding: 0; }
+        .color-item { display: flex; flex-direction: column; align-items: center; gap: 5px; background: #1a1a1a; padding: 10px; border-radius: 6px; border: 1px solid #333; }
+        .color-item span { font-size: 12px; text-align: center; color: #ccc;}
+        .color-item input[type="color"] { width: 100%; height: 35px; border: none; cursor: pointer; border-radius: 4px; background: transparent; padding: 0; }
         
-        .save-btn { background-color: #00ff00; color: black; font-weight: bold; font-size: 18px; padding: 12px; width: 100%; border: none; border-radius: 5px; cursor: pointer; margin-top: 10px; font-family: 'Share Tech Mono', sans-serif;}
-        .save-btn:hover { background-color: #00cc00; }
+        .save-btn { background-color: #00ddff; color: #000; font-weight: bold; font-size: 18px; padding: 12px; width: 100%; border: none; border-radius: 5px; cursor: pointer; margin-top: 10px; font-family: 'Share Tech Mono', sans-serif;}
+        .save-btn:hover, .save-btn:focus { background-color: #00ffcc; outline: none; }
 
-        @media (max-width: 850px) { body[data-mode="all"] .led-board { gap: 3vh; } }
-        
+        /* Alternative display modes for Portrait usage */
         body:not([data-mode="all"]) .footer-wrapper { display: none !important; } 
         body[data-mode="left"] .col-center, body[data-mode="left"] .col-right { display: none !important; }
         body[data-mode="center"] .col-left, body[data-mode="center"] .col-right { display: none !important; }
         body[data-mode="right"] .col-left, body[data-mode="right"] .col-center { display: none !important; }
         body:not([data-mode="all"]) .led-board { border: none; box-shadow: none; background: transparent; display: flex; flex-direction: column; justify-content: space-evenly; margin: 0; }
-        body:not([data-mode="all"]) .col-left, body:not([data-mode="all"]) .col-center, body:not([data-mode="all"]) .col-right { background: transparent; border: none; box-shadow: none; height: 100%; width: 100%; padding: 5%; }
-        body:not([data-mode="all"]) * { white-space: nowrap !important; }
+        body:not([data-mode="all"]) .col-left, body:not([data-mode="all"]) .col-center, body:not([data-mode="all"]) .col-right { background: transparent; border: none; height: 100%; width: 100%; padding: 5%; }
         
-        @media (orientation: landscape) {
-            body:not([data-mode="all"]) .led-board { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(var(--rot)); width: 100vh; height: 100vw; padding: 4vh; }
-        }
-        @media (orientation: portrait) {
-            body:not([data-mode="all"]) .led-board { width: 100%; height: 100vh; padding: 4vw; }
-        }
+        @media (orientation: landscape) { body:not([data-mode="all"]) .led-board { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(var(--rot)); width: 100vh; height: 100vw; padding: 4vh; } }
+        @media (orientation: portrait) { body:not([data-mode="all"]) .led-board { width: 100%; height: 100vh; padding: 4vw; } }
 
     </style>
 </head>
 <body data-mode="all">
 
     <div class="top-buttons">
-        <button class="lock-btn" id="lockBtn" onclick="toggleScreenLock()" title="اسکرین لاک/انلاک">🔒</button>
-        <button class="settings-btn" onclick="openSettings()" title="سیٹنگز کھولیں">⚙️</button>
+        <button tabindex="0" class="lock-btn" id="lockBtn" onclick="toggleScreenLock()" title="اسکرین لاک/انلاک">🔒</button>
+        <button tabindex="0" class="settings-btn" onclick="openSettings()" title="سیٹنگز کھولیں">⚙️</button>
     </div>
 
     <div class="led-board">
@@ -273,7 +251,7 @@
             <div class="panel-box date-section">
                 <div class="col-date-g" id="gregorianDate">-- -- ----</div>
                 <div class="col-date-h hijri-date-ar" id="hijriDate">-- -- ----</div>
-                <div class="sahr-iftar-top" style="display: flex; justify-content: space-between; align-items: center; gap: 2vw; margin-top: 8px; font-family: 'Share Tech Mono', monospace; font-size: clamp(14px, 1.6vw, 20px); font-weight: 700;">
+                <div class="sahr-iftar-top" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
                     <span class="col-azan">SAHR <span id="sahrTop">--:--</span></span>
                     <span class="col-azan">IFTAR <span id="iftarTop">--:--</span></span>
                 </div>
@@ -290,7 +268,7 @@
                     <div class="col-azan shared-time" id="iftarTime">--:--</div>
                     <div class="ur-label col-pr-ur nastaleeq-text shared-ur-name">افطار</div>
                 </div>
-                <div class="time-row" style="margin-top: 1vh; padding-top: 1.5vh;">
+                <div class="time-row" style="margin-top: 1.5vh; border-top: 1px solid #1a1a1a; padding-top: 1.5vh;">
                     <div class="time-label col-pr-en shared-en-name"><span>TULU'</span></div>
                     <div class="col-azan shared-time" id="tuluTime">--:--</div>
                     <div class="ur-label col-pr-ur nastaleeq-text shared-ur-name">طلوع</div>
@@ -307,7 +285,7 @@
                 </div>
             </div>
 
-            <div class="panel-box">
+            <div class="panel-box" style="margin-top: auto;">
                 <div class="time-row">
                     <div class="time-label col-header shared-en-name"><span>EID</span></div>
                     <div class="col-jamaat shared-time" id="eidJamaat">--:--</div>
@@ -352,7 +330,7 @@
                     <span class="jamaat-icon" id="jamaatIcon" title="اذان ہو چکی - جماعت کا انتظار">🔔</span>
                     <span class="jamaat-countdown col-jamaat" id="jamaatCountdown"></span>
                 </div>
-                <span class="col-azan" id="dayName" style="margin-bottom: 5px;">---</span>
+                <span class="col-azan" id="dayName" style="font-size: min(1.8vw, 2.6vh); margin-bottom: 0.5vh;">---</span>
                 <div class="location-temp-row">
                     <span class="col-date-g" id="tempDisplay">--°C</span>
                     <span class="col-pr-en" id="locationNameDisplay">DETECTING...</span>
@@ -377,10 +355,10 @@
                 <table class="prayer-table">
                     <thead>
                         <tr>
-                            <th class="col-header">PRAYER</th>
+                            <th class="col-header" style="text-align: left;">PRAYER</th>
                             <th class="col-header">AZAN</th>
-                            <th class="col-header" style="color: white; text-shadow: none;">JAMAAT</th>
-                            <th class="col-header">NAMAZ</th> 
+                            <th class="col-header">JAMAAT</th>
+                            <th class="col-header" style="text-align: right;">NAMAZ</th> 
                         </tr>
                     </thead>
                     <tbody>
@@ -414,7 +392,7 @@
                             <td class="col-jamaat shared-time" id="ishaJamaat">--:--</td>
                             <td class="col-pr-ur nastaleeq-text ur-label shared-ur-name">عشاء</td>
                         </tr>
-                        <tr id="jumuahRow" style="border-top: 2px dotted #333;">
+                        <tr id="jumuahRow" style="border-top: 1px solid #222;">
                             <td class="col-pr-en shared-en-name">JUM</td>
                             <td class="col-azan shared-time" id="jumuahAzan">--:--</td>
                             <td class="col-jamaat shared-time" id="jumuahJamaat">--:--</td>
@@ -424,9 +402,9 @@
                 </table>
             </div>
 
-            <div class="panel-box tomorrow-box">
-                <div class="col-header" style="font-size: clamp(12px, 1.5vw, 16px);">TOMORROW'S <span id="tmrwPrayerNameEn">--</span> | کل <span id="tmrwPrayerNameUr" class="nastaleeq-text">--</span></div>
-                <div class="col-pr-en" style="font-family: 'Orbitron', sans-serif; font-size: clamp(24px, 3.5vw, 36px); letter-spacing: 2px;" id="tmrwPrayerTime">--:--</div>
+            <div class="panel-box tomorrow-box" style="margin-top: auto;">
+                <div class="col-header" style="font-size: min(1.3vw, 2vh);">TOMORROW'S <span id="tmrwPrayerNameEn">--</span> | کل <span id="tmrwPrayerNameUr" class="nastaleeq-text">--</span></div>
+                <div class="col-pr-en" style="font-family: 'Orbitron', sans-serif; font-size: min(3.5vw, 5vh); letter-spacing: 2px;" id="tmrwPrayerTime">--:--</div>
             </div>
 
         </div>
@@ -444,7 +422,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h2>کنٹرول پینل (Settings)</h2>
-                <span class="close-btn" onclick="closeSettings()">&times;</span>
+                <button tabindex="0" class="close-btn" onclick="closeSettings()">&times;</button>
             </div>
             
             <div class="settings-section">
@@ -453,14 +431,14 @@
                     <tr>
                         <td data-label="اردو نام کی سائز (Font Size)">
                             <div style="display: flex; align-items: center; gap: 15px; width: 100%;">
-                                <input type="range" id="configUrduSize" min="14" max="40" value="26" style="flex: 1; cursor: pointer;" oninput="updateUrduSize(this.value)">
+                                <input tabindex="0" type="range" id="configUrduSize" min="14" max="50" value="26" style="flex: 1; cursor: pointer;" oninput="updateUrduSize(this.value)">
                                 <span id="urduSizeVal" style="min-width: 45px; color: #ffaa00; font-weight: bold; font-family: sans-serif;">26px</span>
                             </div>
                         </td>
                     </tr>
                     <tr>
                         <td data-label="اسکرین ڈسپلے موڈ">
-                            <select id="configDisplayMode">
+                            <select tabindex="0" id="configDisplayMode">
                                 <option value="all">مکمل اسکرین (آڑی/Landscape)</option>
                                 <option value="right">صرف نماز کے اوقات (کھڑی/Portrait)</option>
                                 <option value="center">صرف مین گھڑی (کھڑی/Portrait)</option>
@@ -470,7 +448,7 @@
                     </tr>
                     <tr>
                         <td data-label="پورٹریٹ روٹیشن زاویہ">
-                            <select id="configRotation">
+                            <select tabindex="0" id="configRotation">
                                 <option value="90deg">گھڑی کی سمت (Right - 90°)</option>
                                 <option value="-90deg">الٹی سمت (Left - 270°)</option>
                             </select>
@@ -478,7 +456,7 @@
                     </tr>
                     <tr>
                         <td data-label="فقہی مسلک (عصر کا وقت)">
-                            <select id="configFiqh">
+                            <select tabindex="0" id="configFiqh">
                                 <option value="0">شافعی (Shafi'i) / دیگر</option>
                                 <option value="1">حنفی (Hanafi)</option>
                             </select>
@@ -486,7 +464,7 @@
                     </tr>
                     <tr>
                         <td data-label="ہجری تاریخ کی سیٹنگ">
-                            <select id="configHijriOffset">
+                            <select tabindex="0" id="configHijriOffset">
                                 <option value="-2">-2 دن پیچھے</option>
                                 <option value="-1">-1 دن پیچھے</option>
                                 <option value="0" selected>بالکل درست (عین وقت)</option>
@@ -496,11 +474,11 @@
                         </td>
                     </tr>
                     <tr>
-                        <td data-label="عید کی نماز کا وقت"><select id="configEid"></select></td>
+                        <td data-label="عید کی نماز کا وقت"><select tabindex="0" id="configEid"></select></td>
                     </tr>
                     <tr>
                         <td data-label="چاشت کا وقت">
-                            <select id="configChasht">
+                            <select tabindex="0" id="configChasht">
                                 <option value="15">15 منٹ بعد</option>
                                 <option value="20">20 منٹ بعد</option>
                             </select>
@@ -508,7 +486,7 @@
                     </tr>
                     <tr>
                         <td data-label="نیچے کی پٹی (Scroll Message)">
-                            <select id="configScrollMode">
+                            <select tabindex="0" id="configScrollMode">
                                 <option value="scroll">چلتی ہوئی (Scrolling)</option>
                                 <option value="static">رکی ہوئی (Static/Center)</option>
                             </select>
@@ -539,35 +517,35 @@
             <div class="settings-section">
                 <h3>ایڈوانسڈ کلر سیٹنگز (اپنی مرضی کے رنگ چنیں)</h3>
                 <div class="adv-color-grid">
-                    <div class="color-item"><span>بیک گراؤنڈ (Main)</span><input type="color" id="c_bg"></div>
-                    <div class="color-item"><span>پینل کا رنگ (Panels)</span><input type="color" id="c_panel"></div>
-                    <div class="color-item"><span>بڑی گھڑی کا رنگ</span><input type="color" id="c_clock"></div>
-                    <div class="color-item"><span>سیکنڈز (Seconds)</span><input type="color" id="c_seconds"></div>
-                    <div class="color-item"><span>ہیڈنگز (NAMAZ, AZAN)</span><input type="color" id="c_headers"></div>
-                    <div class="color-item"><span>انگریزی نام (FAJR..)</span><input type="color" id="c_pr_en"></div>
-                    <div class="color-item"><span>اردو نام (فجر، ظہر..)</span><input type="color" id="c_pr_ur"></div>
-                    <div class="color-item"><span>اذان کا وقت</span><input type="color" id="c_azan"></div>
-                    <div class="color-item"><span>جماعت کا وقت</span><input type="color" id="c_jamaat"></div>
-                    <div class="color-item"><span>فجر: اذان</span><input type="color" id="c_azan_fajr"></div>
-                    <div class="color-item"><span>فجر: جماعت</span><input type="color" id="c_jamaat_fajr"></div>
-                    <div class="color-item"><span>ظہر/جمعہ: اذان</span><input type="color" id="c_azan_dhuhr"></div>
-                    <div class="color-item"><span>ظہر/جمعہ: جماعت</span><input type="color" id="c_jamaat_dhuhr"></div>
-                    <div class="color-item"><span>عصر: اذان</span><input type="color" id="c_azan_asr"></div>
-                    <div class="color-item"><span>عصر: جماعت</span><input type="color" id="c_jamaat_asr"></div>
-                    <div class="color-item"><span>مغرب: اذان</span><input type="color" id="c_azan_maghrib"></div>
-                    <div class="color-item"><span>مغرب: جماعت</span><input type="color" id="c_jamaat_maghrib"></div>
-                    <div class="color-item"><span>عشاء: اذان</span><input type="color" id="c_azan_isha"></div>
-                    <div class="color-item"><span>عشاء: جماعت</span><input type="color" id="c_jamaat_isha"></div>
-                    <div class="color-item"><span>جمعہ: اذان (JUM row)</span><input type="color" id="c_azan_jumuah"></div>
-                    <div class="color-item"><span>جمعہ: جماعت (JUM row)</span><input type="color" id="c_jamaat_jumuah"></div>
-                    <div class="color-item"><span>ہجری تاریخ</span><input type="color" id="c_date_h"></div>
-                    <div class="color-item"><span>انگریزی تاریخ</span><input type="color" id="c_date_g"></div>
-                    <div class="color-item"><span>موجودہ نماز کا نام</span><input type="color" id="c_curr_pr"></div>
-                    <div class="color-item"><span>نیچے چلنے والی پٹی</span><input type="color" id="c_scroll"></div>
+                    <div class="color-item"><span>بیک گراؤنڈ (Main)</span><input tabindex="0" type="color" id="c_bg"></div>
+                    <div class="color-item"><span>پینل کا رنگ (Panels)</span><input tabindex="0" type="color" id="c_panel"></div>
+                    <div class="color-item"><span>بڑی گھڑی کا رنگ</span><input tabindex="0" type="color" id="c_clock"></div>
+                    <div class="color-item"><span>سیکنڈز (Seconds)</span><input tabindex="0" type="color" id="c_seconds"></div>
+                    <div class="color-item"><span>ہیڈنگز (NAMAZ, AZAN)</span><input tabindex="0" type="color" id="c_headers"></div>
+                    <div class="color-item"><span>انگریزی نام (FAJR..)</span><input tabindex="0" type="color" id="c_pr_en"></div>
+                    <div class="color-item"><span>اردو نام (فجر، ظہر..)</span><input tabindex="0" type="color" id="c_pr_ur"></div>
+                    <div class="color-item"><span>اذان کا وقت</span><input tabindex="0" type="color" id="c_azan"></div>
+                    <div class="color-item"><span>جماعت کا وقت</span><input tabindex="0" type="color" id="c_jamaat"></div>
+                    <div class="color-item"><span>فجر: اذان</span><input tabindex="0" type="color" id="c_azan_fajr"></div>
+                    <div class="color-item"><span>فجر: جماعت</span><input tabindex="0" type="color" id="c_jamaat_fajr"></div>
+                    <div class="color-item"><span>ظہر/جمعہ: اذان</span><input tabindex="0" type="color" id="c_azan_dhuhr"></div>
+                    <div class="color-item"><span>ظہر/جمعہ: جماعت</span><input tabindex="0" type="color" id="c_jamaat_dhuhr"></div>
+                    <div class="color-item"><span>عصر: اذان</span><input tabindex="0" type="color" id="c_azan_asr"></div>
+                    <div class="color-item"><span>عصر: جماعت</span><input tabindex="0" type="color" id="c_jamaat_asr"></div>
+                    <div class="color-item"><span>مغرب: اذان</span><input tabindex="0" type="color" id="c_azan_maghrib"></div>
+                    <div class="color-item"><span>مغرب: جماعت</span><input tabindex="0" type="color" id="c_jamaat_maghrib"></div>
+                    <div class="color-item"><span>عشاء: اذان</span><input tabindex="0" type="color" id="c_azan_isha"></div>
+                    <div class="color-item"><span>عشاء: جماعت</span><input tabindex="0" type="color" id="c_jamaat_isha"></div>
+                    <div class="color-item"><span>جمعہ: اذان (JUM row)</span><input tabindex="0" type="color" id="c_azan_jumuah"></div>
+                    <div class="color-item"><span>جمعہ: جماعت (JUM row)</span><input tabindex="0" type="color" id="c_jamaat_jumuah"></div>
+                    <div class="color-item"><span>ہجری تاریخ</span><input tabindex="0" type="color" id="c_date_h"></div>
+                    <div class="color-item"><span>انگریزی تاریخ</span><input tabindex="0" type="color" id="c_date_g"></div>
+                    <div class="color-item"><span>موجودہ نماز کا نام</span><input tabindex="0" type="color" id="c_curr_pr"></div>
+                    <div class="color-item"><span>نیچے چلنے والی پٹی</span><input tabindex="0" type="color" id="c_scroll"></div>
                 </div>
             </div>
 
-            <button class="save-btn" onclick="saveSettings()">سیٹنگز محفوظ کریں (Save)</button>
+            <button tabindex="0" class="save-btn" onclick="saveSettings()">سیٹنگز محفوظ کریں (Save)</button>
         </div>
     </div>
 
@@ -633,14 +611,14 @@
             advColors: {
                 bg: "#111111", panel: "#0a0a0a", clock: "#ffaa00", headers: "#00ffff",
                 prEn: "#ffaa00", prUr: "#00ff00", azan: "#ff3333", jamaat: "#00ff00",
-                dateG: "#00ffff", dateH: "#00ff00", currPr: "#00ffff", scroll: "#00ffff"
-                , seconds: "#ffaa00"
-                , azanFajr: "#ff3333", jamaatFajr: "#00ff00"
-                , azanDhuhr: "#ff3333", jamaatDhuhr: "#00ff00"
-                , azanAsr: "#ff3333", jamaatAsr: "#00ff00"
-                , azanMaghrib: "#ff3333", jamaatMaghrib: "#00ff00"
-                , azanIsha: "#ff3333", jamaatIsha: "#00ff00"
-                , azanJumuah: "#ff3333", jamaatJumuah: "#00ff00"
+                dateG: "#00ffff", dateH: "#00ff00", currPr: "#00ffff", scroll: "#00ffff",
+                seconds: "#ffaa00",
+                azanFajr: "#ff3333", jamaatFajr: "#00ff00",
+                azanDhuhr: "#ff3333", jamaatDhuhr: "#00ff00",
+                azanAsr: "#ff3333", jamaatAsr: "#00ff00",
+                azanMaghrib: "#ff3333", jamaatMaghrib: "#00ff00",
+                azanIsha: "#ff3333", jamaatIsha: "#00ff00",
+                azanJumuah: "#ff3333", jamaatJumuah: "#00ff00"
             }
         };
 
@@ -707,18 +685,18 @@
                 let tr = document.createElement("tr");
                 tr.innerHTML = `
                     <td data-label="نماز" class="col-pr-en nastaleeq-text" style="font-size:16px;">${conf.name}</td>
-                    <td data-label="موڈ"><select id="cfg_${key}_mode" onchange="toggleMode('${key}')">${modeOpts.replace(`value="${cMode}"`, `value="${cMode}" selected`)}</select></td>
+                    <td data-label="موڈ"><select tabindex="0" id="cfg_${key}_mode" onchange="toggleMode('${key}')">${modeOpts.replace(`value="${cMode}"`, `value="${cMode}" selected`)}</select></td>
                     <td data-label="آٹو: اذان سیٹنگ">
-                        <select id="cfg_${key}_offset" class="auto-input-${key}" style="margin-bottom:5px;">${offsetOpts.replace(`value="${conf.offset}"`, `value="${conf.offset}" selected`)}</select>
-                        <select id="cfg_${key}_aRound" class="auto-input-${key}">${roundOpts.replace(`value="${conf.aRound}"`, `value="${conf.aRound}" selected`)}</select>
+                        <select tabindex="0" id="cfg_${key}_offset" class="auto-input-${key}" style="margin-bottom:5px;">${offsetOpts.replace(`value="${conf.offset}"`, `value="${conf.offset}" selected`)}</select>
+                        <select tabindex="0" id="cfg_${key}_aRound" class="auto-input-${key}">${roundOpts.replace(`value="${conf.aRound}"`, `value="${conf.aRound}" selected`)}</select>
                     </td>
                     <td data-label="آٹو: جماعت سیٹنگ">
-                        <select id="cfg_${key}_jGap" class="auto-input-${key}" style="margin-bottom:5px;">${jGapOpts.replace(`value="${conf.jGap}"`, `value="${conf.jGap}" selected`)}</select>
-                        <select id="cfg_${key}_jRound" class="auto-input-${key}">${roundOpts.replace(`value="${conf.jRound}"`, `value="${conf.jRound}" selected`)}</select>
+                        <select tabindex="0" id="cfg_${key}_jGap" class="auto-input-${key}" style="margin-bottom:5px;">${jGapOpts.replace(`value="${conf.jGap}"`, `value="${conf.jGap}" selected`)}</select>
+                        <select tabindex="0" id="cfg_${key}_jRound" class="auto-input-${key}">${roundOpts.replace(`value="${conf.jRound}"`, `value="${conf.jRound}" selected`)}</select>
                     </td>
                     <td data-label="فکس: وقت کی سیٹنگ">
-                        <input type="time" id="cfg_${key}_fixedTime" class="fixed-input-${key}" value="${conf.fixedTime || '13:30'}" style="margin-bottom:5px;">
-                        <select id="cfg_${key}_fixedAzanGap" class="fixed-input-${key}">
+                        <input tabindex="0" type="time" id="cfg_${key}_fixedTime" class="fixed-input-${key}" value="${conf.fixedTime || '13:30'}" style="margin-bottom:5px;">
+                        <select tabindex="0" id="cfg_${key}_fixedAzanGap" class="fixed-input-${key}">
                             ${gapOpts.replace(`value="${conf.fixedAzanGap || 15}"`, `value="${conf.fixedAzanGap || 15}" selected`)}
                         </select>
                     </td>
