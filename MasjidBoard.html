@@ -128,10 +128,11 @@
         .hijri-date-ar { font-size: min(2.2vw, 3.2vh); }
         .sahr-iftar-top { font-size: min(1.5vw, 2.2vh) !important; font-family: 'Share Tech Mono', sans-serif !important; border-top: 1px solid #1a1a1a; padding-top: 1vh;}
         
+        /* STRICT ALIGNMENT FOR LEFT COLUMN TIMES */
         .time-row { display: flex; justify-content: space-between; align-items: center; padding: 0.8vh 0; white-space: nowrap; gap: 0.5vw; }
-        .time-label { flex: 1; text-align: left; }
-        .time-row .col-azan, .time-row .col-jamaat { flex: 1; text-align: center; }
-        .ur-label { text-align: right; flex: 1; } 
+        .time-row .time-label { text-align: left; width: 30%; flex-shrink: 0; }
+        .time-row .col-azan, .time-row .col-jamaat { text-align: center; width: 40%; flex-shrink: 0; }
+        .time-row .ur-label { text-align: right; width: 30%; flex-shrink: 0; }
 
         /* Calligraphy styling aligned with Image 2 */
         .calligraphy { display: flex; justify-content: space-between; align-items: center; width: 100%; font-size: min(3.5vw, 5vh); white-space: nowrap; margin-bottom: 0;}
@@ -162,15 +163,23 @@
         .prayer-header-side span:last-child { font-size: min(2vw, 3vh); font-family: 'Orbitron', sans-serif;}
         .prayer-header h2 { margin: 0; font-size: min(2.5vw, 4vh); letter-spacing: 2px; }
         
-        /* Fixed Table Layout to ensure perfectly aligned columns (No zigzag text) */
+        /* Fixed Table Layout to ensure perfectly aligned columns */
         .prayer-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
         .prayer-table th { font-size: min(1.2vw, 1.8vh); padding: 1vh 0; border-bottom: 1px solid #1a1a1a; letter-spacing: 1px; color: rgba(255,255,255,0.6); font-weight: normal;}
         .prayer-table td { padding: 1vh 0; vertical-align: middle; white-space: nowrap; }
         
-        .prayer-table th:nth-child(1), .prayer-table td:nth-child(1) { text-align: left; width: 22%; }
-        .prayer-table th:nth-child(2), .prayer-table td:nth-child(2) { text-align: center; width: 28%; }
-        .prayer-table th:nth-child(3), .prayer-table td:nth-child(3) { text-align: center; width: 28%; }
-        .prayer-table th:nth-child(4), .prayer-table td:nth-child(4) { text-align: right; width: 22%; }
+        /* Adjusted widths to prevent overlapping and strict alignment */
+        .prayer-table th:nth-child(1), .prayer-table td:nth-child(1) { text-align: left; width: 18%; }
+        .prayer-table th:nth-child(2), .prayer-table td:nth-child(2) { text-align: center; width: 32%; }
+        .prayer-table th:nth-child(3), .prayer-table td:nth-child(3) { text-align: center; width: 32%; }
+        .prayer-table th:nth-child(4), .prayer-table td:nth-child(4) { text-align: right; width: 18%; }
+
+        /* Reduced font thickness for the right column digits */
+        .prayer-table .shared-time {
+            font-weight: 500; /* Thinner digits */
+            font-size: min(1.9vw, 2.8vh); /* Slightly scaled down to prevent bleed/overlap */
+            letter-spacing: 0px; 
+        }
 
         #fajrAzan { color: var(--c-azan-fajr) !important; } #fajrJamaat { color: var(--c-jamaat-fajr) !important; }
         #zuharAzan { color: var(--c-azan-dhuhr) !important; } #zuharJamaat { color: var(--c-jamaat-dhuhr) !important; }
@@ -189,10 +198,10 @@
         @keyframes moveLeft { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
         .static-scroll { animation: none !important; display: block !important; text-align: center; width: 100%; transform: none !important; white-space: normal !important; overflow: hidden;}
 
-        .top-buttons { position: fixed; top: 10px; right: 20px; display: flex; gap: 15px; z-index: 9999; }
-        .settings-btn, .lock-btn { background: transparent; color: #555; border: none; cursor: pointer; font-size: min(2vw, 24px); opacity: 0.4; transition: 0.3s; padding: 5px; border-radius: 5px;}
-        .settings-btn:hover, .lock-btn:hover, .settings-btn:focus, .lock-btn:focus { opacity: 1; color: var(--c-headers); text-shadow: none; }
-        .lock-btn.locked { opacity: 1; }
+        /* Moved Setting button more right */
+        .top-buttons { position: fixed; top: 10px; right: 5px; display: flex; gap: 10px; z-index: 9999; }
+        .settings-btn { background: transparent; color: #555; border: none; cursor: pointer; font-size: min(2vw, 24px); opacity: 0.4; transition: 0.3s; padding: 5px; border-radius: 5px;}
+        .settings-btn:hover, .settings-btn:focus { opacity: 1; color: var(--c-headers); text-shadow: none; }
         
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.9); justify-content: center; align-items: center; }
         .modal-content { background-color: #111; border: 1px solid var(--c-headers); border-radius: 8px; width: 95%; max-width: 900px; max-height: 90vh; overflow-y: auto; padding: 25px; color: white; direction: rtl; }
@@ -242,7 +251,6 @@
 <body data-mode="all">
 
     <div class="top-buttons">
-        <button tabindex="0" class="lock-btn" id="lockBtn" onclick="toggleScreenLock()" title="اسکرین لاک/انلاک">🔒</button>
         <button tabindex="0" class="settings-btn" onclick="openSettings()" title="سیٹنگز کھولیں">⚙️</button>
     </div>
 
@@ -552,7 +560,6 @@
     <script>
         window.prayerSchedule = [];
         window.tomorrowSchedule = [];
-        window.screenLocked = false;
         window.wakeLock = null;
 
         async function requestWakeLock() {
@@ -563,33 +570,11 @@
                 }
             } catch (e) { console.log('Wake Lock:', e.message); }
         }
+        
         document.addEventListener('visibilitychange', () => {
-            if (document.visibilityState === 'visible' && !window.screenLocked) requestWakeLock();
+            if (document.visibilityState === 'visible') requestWakeLock();
         });
 
-        function toggleScreenLock() {
-            window.screenLocked = !window.screenLocked;
-            const btn = document.getElementById('lockBtn');
-            if (window.screenLocked) {
-                document.body.setAttribute('data-locked', 'true');
-                btn.textContent = '🔓';
-                btn.classList.add('locked');
-                btn.title = 'اسکرین انلاک کریں';
-                if (document.getElementById("settingsModal").style.display === "flex") closeSettings();
-            } else {
-                document.body.removeAttribute('data-locked');
-                btn.textContent = '🔒';
-                btn.classList.remove('locked');
-                btn.title = 'اسکرین لاک کریں';
-                requestWakeLock();
-            }
-        }
-        window.addEventListener('beforeunload', function(e) {
-            if (window.screenLocked) {
-                e.preventDefault();
-                e.returnValue = '';
-            }
-        });
         window.hijriBeforeMaghrib = null; 
         window.hijriAfterMaghrib = null;  
         window.maghribMins = 0;           
@@ -847,12 +832,11 @@
             else if(window.lastApiResultToday) { processApiData(window.lastApiResultToday, window.lastApiResultTomorrow); updateLiveClock(); }
         }
 
-        function openSettings() { if (window.screenLocked) return; document.getElementById("settingsModal").style.display = "flex"; }
+        function openSettings() { document.getElementById("settingsModal").style.display = "flex"; }
         function closeSettings() { document.getElementById("settingsModal").style.display = "none"; }
         
         document.body.addEventListener('click', function(e) {
-            if (window.screenLocked && !e.target.closest('#lockBtn')) return;
-            if(!e.target.closest('.modal-content') && !e.target.closest('.settings-btn') && !e.target.closest('.lock-btn') && !e.target.closest('select') && !e.target.closest('input')) {
+            if(!e.target.closest('.modal-content') && !e.target.closest('.settings-btn') && !e.target.closest('select') && !e.target.closest('input')) {
                 if (!document.fullscreenElement) {
                     document.documentElement.requestFullscreen().catch(err => console.log(`Auto full-screen blocked.`));
                 }
