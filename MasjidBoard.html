@@ -8,8 +8,7 @@
     
     <style>
         :root {
-            /* Keep all your existing color variables */
-            --c-bg: #050505;
+            var--c-bg: #050505;
             --c-panel: #080808;
             --c-board: #030303;
             --c-clock: #ff6600;
@@ -51,11 +50,10 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            overflow: hidden; /* Absolute prevention of scrolling out of bounds */
+            overflow: hidden; 
             cursor: default; 
         }
 
-        /* --- TV Remote Focus Outline Support --- */
         *:focus {
             outline: 3px solid var(--c-headers) !important;
             outline-offset: 2px !important;
@@ -64,7 +62,7 @@
 
         .led-board {
             background: linear-gradient(180deg, var(--c-board, #030303) 0%, #000 100%);
-            border: 1px solid #1a2a1a; /* Thinner border for cleaner look */
+            border: 1px solid #1a2a1a; 
             border-radius: 8px;
             width: 100%;
             flex: 1; 
@@ -75,7 +73,6 @@
             transition: all 0.5s ease;
         }
 
-        /* --- Grid Layout to Prevent Overlap and strictly fix boundaries --- */
         body[data-mode="all"] .led-board {
             display: grid;
             grid-template-columns: minmax(0, 1fr) minmax(0, 2fr) minmax(0, 1fr);
@@ -100,7 +97,7 @@
 
         .col-left, .col-center, .col-right {
             background-color: var(--c-panel);
-            border: 1px solid #1a1a1a; /* Flat professional look like Image 2 */
+            border: 1px solid #1a1a1a; 
             border-radius: 8px;
             display: flex;
             flex-direction: column;
@@ -111,14 +108,13 @@
         .col-center { padding: 2vh 2vw; justify-content: space-between; align-items: center; }
 
         .panel-box {
-            background-color: transparent; /* Makes the layout breathe more */
+            background-color: transparent; 
             border: 1px solid #1a1a1a;
             border-radius: 6px;
             padding: 1.5vh 1vw;
             width: 100%;
         }
 
-        /* Perfectly Auto-scaling Typography using vh/vw mixing */
         .shared-en-name { font-size: min(1.8vw, 2.5vh); letter-spacing: 1px; font-weight: 700; }
         .shared-time { font-size: min(2.2vw, 3.2vh); letter-spacing: 1px; font-weight: 700; font-family: 'Orbitron', sans-serif;}
         .shared-ur-name { font-size: var(--ur-size); }
@@ -128,18 +124,15 @@
         .hijri-date-ar { font-size: min(2.2vw, 3.2vh); }
         .sahr-iftar-top { font-size: min(1.5vw, 2.2vh) !important; font-family: 'Share Tech Mono', sans-serif !important; border-top: 1px solid #1a1a1a; padding-top: 1vh;}
         
-        /* STRICT ALIGNMENT FOR LEFT COLUMN TIMES */
         .time-row { display: flex; justify-content: space-between; align-items: center; padding: 0.8vh 0; white-space: nowrap; gap: 0.5vw; }
         .time-row .time-label { text-align: left; width: 30%; flex-shrink: 0; }
         .time-row .col-azan, .time-row .col-jamaat { text-align: center; width: 40%; flex-shrink: 0; }
-        .time-row .ur-label { text-align: right; width: 30%; flex-shrink: 0; }
+        .time-row .ur-label { text-align: right; width: 30%; flex-shrink: 0; padding-right: 1.5vw; }
 
-        /* Calligraphy styling aligned with Image 2 */
         .calligraphy { display: flex; justify-content: space-between; align-items: center; width: 100%; font-size: min(3.5vw, 5vh); white-space: nowrap; margin-bottom: 0;}
         .calligraphy .bismillah { flex: 1; text-align: center; color: var(--c-date-h); font-weight: 700; }
         .calligraphy .badge { width: min(4vw, 6vh); height: min(4vw, 6vh); display: flex; align-items: center; justify-content: center; border: 2px solid var(--c-pr-en); border-radius: 50%; color: var(--c-pr-en); font-size: 0.4em; }
         
-        /* Main Clock precisely aligned at baseline so seconds don't overlap */
         .main-clock { font-family: 'Orbitron', sans-serif; font-size: min(13vw, 20vh); display: flex; align-items: baseline; justify-content: center; line-height: 1; font-weight: 700; letter-spacing: 2px; margin: 1vh 0; }
         .sec { font-size: 0.35em; margin-left: 1vw; opacity: 0.9; transform: translateY(-1vh); }
         #seconds { color: var(--c-seconds); }
@@ -163,21 +156,18 @@
         .prayer-header-side span:last-child { font-size: min(2vw, 3vh); font-family: 'Orbitron', sans-serif;}
         .prayer-header h2 { margin: 0; font-size: min(2.5vw, 4vh); letter-spacing: 2px; }
         
-        /* Fixed Table Layout to ensure perfectly aligned columns */
         .prayer-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
         .prayer-table th { font-size: min(1.2vw, 1.8vh); padding: 1vh 0; border-bottom: 1px solid #1a1a1a; letter-spacing: 1px; color: rgba(255,255,255,0.6); font-weight: normal;}
         .prayer-table td { padding: 1vh 0; vertical-align: middle; white-space: nowrap; }
         
-        /* Adjusted widths to prevent overlapping and strict alignment */
         .prayer-table th:nth-child(1), .prayer-table td:nth-child(1) { text-align: left; width: 18%; }
         .prayer-table th:nth-child(2), .prayer-table td:nth-child(2) { text-align: center; width: 32%; }
         .prayer-table th:nth-child(3), .prayer-table td:nth-child(3) { text-align: center; width: 32%; }
         .prayer-table th:nth-child(4), .prayer-table td:nth-child(4) { text-align: right; width: 18%; }
 
-        /* Reduced font thickness for the right column digits */
         .prayer-table .shared-time {
-            font-weight: 500; /* Thinner digits */
-            font-size: min(1.9vw, 2.8vh); /* Slightly scaled down to prevent bleed/overlap */
+            font-weight: 500; 
+            font-size: min(1.9vw, 2.8vh); 
             letter-spacing: 0px; 
         }
 
@@ -190,7 +180,6 @@
 
         .tomorrow-box { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 0.5vh; border: none; border-top: 1px solid #1a1a1a; padding-top: 1.5vh; }
 
-        /* Sleek, thin footer scroll */
         .footer-wrapper { width: 100%; margin-top: 1.5vh; flex-shrink: 0; margin-bottom: 0.5vh;}
         .footer-scroll { background: var(--c-panel); width: 100%; padding: 0.8vh 1.5vw; border: 1px solid #1a1a1a; border-radius: 6px; overflow: hidden; white-space: nowrap; position: relative; }
         
@@ -198,7 +187,8 @@
         @keyframes moveLeft { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
         .static-scroll { animation: none !important; display: block !important; text-align: center; width: 100%; transform: none !important; white-space: normal !important; overflow: hidden;}
 
-        /* Moved Setting button more right */
+        @keyframes pulsePulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
+
         .top-buttons { position: fixed; top: 10px; right: 5px; display: flex; gap: 10px; z-index: 9999; }
         .settings-btn { background: transparent; color: #555; border: none; cursor: pointer; font-size: min(2vw, 24px); opacity: 0.4; transition: 0.3s; padding: 5px; border-radius: 5px;}
         .settings-btn:hover, .settings-btn:focus { opacity: 1; color: var(--c-headers); text-shadow: none; }
@@ -235,7 +225,6 @@
         .save-btn { background-color: #00ddff; color: #000; font-weight: bold; font-size: 18px; padding: 12px; width: 100%; border: none; border-radius: 5px; cursor: pointer; margin-top: 10px; font-family: 'Share Tech Mono', sans-serif;}
         .save-btn:hover, .save-btn:focus { background-color: #00ffcc; outline: none; }
 
-        /* Alternative display modes for Portrait usage */
         body:not([data-mode="all"]) .footer-wrapper { display: none !important; } 
         body[data-mode="left"] .col-center, body[data-mode="left"] .col-right { display: none !important; }
         body[data-mode="center"] .col-left, body[data-mode="center"] .col-right { display: none !important; }
@@ -294,6 +283,10 @@
             </div>
 
             <div class="panel-box" style="margin-top: auto;">
+                <div id="makroohAlertMsgLeft" class="nastaleeq-text" style="display: none; color: var(--c-azan); font-size: min(2.5vw, 3.5vh); text-align: center; padding-bottom: 1vh; border-bottom: 1px dashed #333; margin-bottom: 1vh; animation: pulsePulse 1.5s infinite;">
+                    --
+                </div>
+                
                 <div class="time-row">
                     <div class="time-label col-header shared-en-name"><span>EID</span></div>
                     <div class="col-jamaat shared-time" id="eidJamaat">--:--</div>
@@ -410,7 +403,18 @@
                 </table>
             </div>
 
-            <div class="panel-box tomorrow-box" style="margin-top: auto;">
+            <div id="prayerCountdownBox" style="display: none; text-align: center; padding-top: 1.5vh; border-top: 1px solid #1a1a1a; margin-top: auto;">
+                <div style="font-size: min(1.5vw, 2.2vh); display: flex; justify-content: center; align-items: center; gap: 0.5vw; flex-wrap: wrap;">
+                    <span class="nastaleeq-text" id="countdownUrduName" style="color: var(--c-pr-ur);">-- کا باقی وقت</span>
+                    <span style="color: #666;">/</span>
+                    <span id="countdownEngName" style="color: var(--c-pr-en); font-family: 'Share Tech Mono', monospace;">-- TIME LEFT</span>
+                </div>
+                <div id="prayerCountdownTime" style="font-family: 'Orbitron', monospace; font-size: min(3vw, 4.5vh); font-weight: bold; color: var(--c-headers); letter-spacing: 2px; margin-top: 0.5vh;">
+                    --:--
+                </div>
+            </div>
+
+            <div class="panel-box tomorrow-box" style="margin-top: 1vh;">
                 <div class="col-header" style="font-size: min(1.3vw, 2vh);">TOMORROW'S <span id="tmrwPrayerNameEn">--</span> | کل <span id="tmrwPrayerNameUr" class="nastaleeq-text">--</span></div>
                 <div class="col-pr-en" style="font-family: 'Orbitron', sans-serif; font-size: min(3.5vw, 5vh); letter-spacing: 2px;" id="tmrwPrayerTime">--:--</div>
             </div>
@@ -578,6 +582,8 @@
         window.hijriBeforeMaghrib = null; 
         window.hijriAfterMaghrib = null;  
         window.maghribMins = 0;           
+        window.sunriseMins = 0;
+        window.zawalMins = 0;
         window.currentGregorianDateStr = ""; 
         window.lastApiResultToday = null;
         window.lastApiResultTomorrow = null;
@@ -877,15 +883,15 @@
             let jTime = applyConfig(timeToMins(times.Dhuhr), 'jumuah'); 
 
             let schedule = [
-                { en: "FAJR", ur: "فجر", azanMins: fTime.azanMins, jamaatMins: fTime.jamaatMins, azan12: formatMinsTo12(fTime.azanMins), jamaat12: formatMinsTo12(fTime.jamaatMins), expireMins: fTime.jamaatMins + 10, start: t12(times.Fajr), end: t12(times.Sunrise) },
-                { en: "ZUHAR", ur: "ظہر", azanMins: zTime.azanMins, jamaatMins: zTime.jamaatMins, azan12: formatMinsTo12(zTime.azanMins), jamaat12: formatMinsTo12(zTime.jamaatMins), expireMins: zTime.jamaatMins + 10, start: t12(times.Dhuhr), end: t12(times.Asr) },
-                { en: "ASR", ur: "عصر", azanMins: aTime.azanMins, jamaatMins: aTime.jamaatMins, azan12: formatMinsTo12(aTime.azanMins), jamaat12: formatMinsTo12(aTime.jamaatMins), expireMins: aTime.jamaatMins + 10, start: t12(times.Asr), end: t12(times.Sunset) },
-                { en: "MAGRIB", ur: "مغرب", azanMins: mTime.azanMins, jamaatMins: mTime.jamaatMins, azan12: formatMinsTo12(mTime.azanMins), jamaat12: formatMinsTo12(mTime.jamaatMins), expireMins: mTime.jamaatMins + 10, start: t12(times.Sunset), end: t12(times.Isha) },
-                { en: "ISHA'", ur: "عشاء", azanMins: iTime.azanMins, jamaatMins: iTime.jamaatMins, azan12: formatMinsTo12(iTime.azanMins), jamaat12: formatMinsTo12(iTime.jamaatMins), expireMins: iTime.jamaatMins + 10, start: t12(times.Isha), end: t12(times.Fajr) }
+                { en: "FAJR", ur: "فجر", azanMins: fTime.azanMins, jamaatMins: fTime.jamaatMins, azan12: formatMinsTo12(fTime.azanMins), jamaat12: formatMinsTo12(fTime.jamaatMins), expireMins: fTime.jamaatMins + 10, start: t12(times.Fajr), end: t12(times.Sunrise), startMins: timeToMins(times.Fajr), endMins: timeToMins(times.Sunrise) },
+                { en: "ZUHAR", ur: "ظہر", azanMins: zTime.azanMins, jamaatMins: zTime.jamaatMins, azan12: formatMinsTo12(zTime.azanMins), jamaat12: formatMinsTo12(zTime.jamaatMins), expireMins: zTime.jamaatMins + 10, start: t12(times.Dhuhr), end: t12(times.Asr), startMins: timeToMins(times.Dhuhr), endMins: timeToMins(times.Asr) },
+                { en: "ASR", ur: "عصر", azanMins: aTime.azanMins, jamaatMins: aTime.jamaatMins, azan12: formatMinsTo12(aTime.azanMins), jamaat12: formatMinsTo12(aTime.jamaatMins), expireMins: aTime.jamaatMins + 10, start: t12(times.Asr), end: t12(times.Sunset), startMins: timeToMins(times.Asr), endMins: timeToMins(times.Sunset) },
+                { en: "MAGRIB", ur: "مغرب", azanMins: mTime.azanMins, jamaatMins: mTime.jamaatMins, azan12: formatMinsTo12(mTime.azanMins), jamaat12: formatMinsTo12(mTime.jamaatMins), expireMins: mTime.jamaatMins + 10, start: t12(times.Sunset), end: t12(times.Isha), startMins: timeToMins(times.Sunset), endMins: timeToMins(times.Isha) },
+                { en: "ISHA'", ur: "عشاء", azanMins: iTime.azanMins, jamaatMins: iTime.jamaatMins, azan12: formatMinsTo12(iTime.azanMins), jamaat12: formatMinsTo12(iTime.jamaatMins), expireMins: iTime.jamaatMins + 10, start: t12(times.Isha), end: t12(times.Fajr), startMins: timeToMins(times.Isha), endMins: timeToMins(times.Fajr) }
             ];
 
             if (isFriday) {
-                schedule[1] = { en: "JUMU'AH", ur: "جمعہ", azanMins: jTime.azanMins, jamaatMins: jTime.jamaatMins, azan12: formatMinsTo12(jTime.azanMins), jamaat12: formatMinsTo12(jTime.jamaatMins), expireMins: jTime.jamaatMins + 10, start: t12(times.Dhuhr), end: t12(times.Asr) };
+                schedule[1] = { en: "JUMU'AH", ur: "جمعہ", azanMins: jTime.azanMins, jamaatMins: jTime.jamaatMins, azan12: formatMinsTo12(jTime.azanMins), jamaat12: formatMinsTo12(jTime.jamaatMins), expireMins: jTime.jamaatMins + 10, start: t12(times.Dhuhr), end: t12(times.Asr), startMins: timeToMins(times.Dhuhr), endMins: timeToMins(times.Asr) };
             }
             return { s: schedule, f: fTime, z: zTime, a: aTime, m: mTime, i: iTime, j: jTime };
         }
@@ -919,6 +925,9 @@
             document.getElementById('tuluTime').innerText = t12(times.Sunrise);
             document.getElementById('zawalTime').innerText = t12(times.Dhuhr); 
             document.getElementById('gurubTime').innerText = t12(times.Sunset);
+
+            window.sunriseMins = timeToMins(times.Sunrise);
+            window.zawalMins = timeToMins(times.Dhuhr);
 
             let mainCalc = calculateSchedule(times, isFriday);
             window.prayerSchedule = mainCalc.s;
@@ -1070,6 +1079,69 @@
 
                     document.getElementById('hijriDate').innerText = finalHijri.day + '-' + String(finalHijri.month.number).padStart(2, '0') + '-' + finalHijri.year + ' ' + finalHijri.month.ar;
                 }
+                
+                let isMakrooh = false;
+                let alertText = "";
+                let chashtMins = window.sunriseMins + currentConfig.general.chashtOffset;
+
+                if (window.sunriseMins && nowTotalMins >= window.sunriseMins && nowTotalMins < chashtMins) {
+                    isMakrooh = true;
+                    alertText = "مکروہ وقت شروع ہو گیا ہے";
+                } else if (window.zawalMins && nowTotalMins >= (window.zawalMins - 4) && nowTotalMins < window.zawalMins) {
+                    isMakrooh = true;
+                    alertText = "زوال کا وقت شروع ہو گیا ہے";
+                }
+
+                let alertDivLeft = document.getElementById('makroohAlertMsgLeft');
+                if (isMakrooh) {
+                    alertDivLeft.innerText = alertText;
+                    alertDivLeft.style.display = "block";
+                } else {
+                    alertDivLeft.style.display = "none";
+                }
+
+                // ڈائنیمک کاؤنٹ ڈاؤن لاجک (نماز کے نام کے ساتھ)
+                if (window.prayerSchedule && window.prayerSchedule.length === 5) {
+                    let currentWaqtEnd = null;
+                    let p = window.prayerSchedule; 
+                    let activeUr = ""; let activeEn = "";
+                    
+                    if (nowTotalMins >= p[0].startMins && nowTotalMins < p[0].endMins) {
+                        currentWaqtEnd = p[0].endMins; activeUr = p[0].ur; activeEn = "FAJR";
+                    } else if (nowTotalMins >= p[1].startMins && nowTotalMins < p[1].endMins) {
+                        currentWaqtEnd = p[1].endMins; activeUr = p[1].ur; activeEn = p[1].en; // ZUHAR / JUMU'AH
+                    } else if (nowTotalMins >= p[2].startMins && nowTotalMins < p[2].endMins) {
+                        currentWaqtEnd = p[2].endMins; activeUr = p[2].ur; activeEn = "ASR";
+                    } else if (nowTotalMins >= p[3].startMins && nowTotalMins < p[3].endMins) {
+                        currentWaqtEnd = p[3].endMins; activeUr = p[3].ur; activeEn = "MAGHRIB";
+                    } else if (nowTotalMins >= p[4].startMins) {
+                        let tmrwFajrMins = window.tomorrowSchedule[0] ? window.tomorrowSchedule[0].startMins : p[0].startMins;
+                        currentWaqtEnd = 1440 + tmrwFajrMins; activeUr = p[4].ur; activeEn = "ISHA'";
+                    } else if (nowTotalMins < p[0].startMins) {
+                        currentWaqtEnd = p[0].startMins; activeUr = p[4].ur; activeEn = "ISHA'";
+                    }
+
+                    let cBox = document.getElementById('prayerCountdownBox');
+                    if (currentWaqtEnd !== null) {
+                        let diff = currentWaqtEnd - nowTotalMins;
+                        let h = Math.floor(diff / 60);
+                        let m = diff % 60;
+                        
+                        let timeStr = "";
+                        if (h > 0) timeStr += h + "h ";
+                        timeStr += m + "m";
+                        
+                        // یہاں نماز کا نام اردو اور انگلش میں سیٹ ہو رہا ہے
+                        document.getElementById('countdownUrduName').innerText = activeUr + " کا باقی وقت";
+                        document.getElementById('countdownEngName').innerText = activeEn + " TIME LEFT";
+                        document.getElementById('prayerCountdownTime').innerText = timeStr;
+                        
+                        cBox.style.display = "block";
+                    } else {
+                        cBox.style.display = "none";
+                    }
+                }
+
                 updateActivePrayerTracking();
             } catch (e) { console.log(e); }
         }
