@@ -1,7 +1,7 @@
 const CACHE_NAME = 'masjid-board-v1';
 const urlsToCache = [
   './',
-  './index.html',
+  './MasjidBoard.html',
   './manifest.json'
 ];
 
