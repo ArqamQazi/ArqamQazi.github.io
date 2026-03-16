@@ -2,7 +2,7 @@
   "name": "Digital Masjid Display Board",
   "short_name": "Masjid Board",
   "start_url": "./MasjidBoard.html",
-  "display": "standalone",
+  "display": "fullscreen",
   "background_color": "#050505",
   "theme_color": "#00ddff",
   "orientation": "landscape",
